@@ -16,13 +16,13 @@ def pretty_print(d):
 	print("}")
 
 def tracefunc(frame, event, arg, indent=[0]):
-      if event == "call":
-          indent[0] += 2
-          print("-" * indent[0] + "> call function", frame.f_code.co_name)
-      elif event == "return":
-          print("<" + "-" * indent[0], "exit function", frame.f_code.co_name)
-          indent[0] -= 2
-      return tracefunc
+	if event == "call":
+		indent[0] += 2
+		print("-" * indent[0] + "> call function", frame.f_code.co_name)
+	elif event == "return":
+		print("<" + "-" * indent[0], "exit function", frame.f_code.co_name)
+		indent[0] -= 2
+	return tracefunc
 
 # uncomment to trace function call
 # sys.setprofile(tracefunc)
@@ -105,6 +105,6 @@ except ImportError as e:
 	sys.exit(1)
 
 if result == None or result == True:
-	sys.exit(0);
+	sys.exit(0)
 else:
-	sys.exit(1);	
+	sys.exit(1)

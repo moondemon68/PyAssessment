@@ -183,3 +183,5 @@ tmp.txt
 
 res/*.json
 res/*/*.json
+
+logs/*.txt

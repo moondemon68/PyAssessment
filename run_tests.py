@@ -12,10 +12,10 @@ class bcolors:
     ENDC = '\033[0m'
 
 def myprint(color, s, *args):
-  if _platform != "win32" and sys.stdout.isatty():
-    print(color, s, bcolors.ENDC, *args)
-  else:
-    print(*args)
+    if _platform != "win32" and sys.stdout.isatty():
+        print(color, s, bcolors.ENDC, *args)
+    else:
+        print(*args)
 
 usage = "usage: %prog [options] <test directory>"
 parser = OptionParser()

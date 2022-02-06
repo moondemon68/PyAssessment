@@ -18,7 +18,7 @@ This program is the deliverable of my [final project](https://drive.google.com/f
 ```
 4. try grading something
 ```
-python grade.py test/max_3.py test/max_3_1.py
+python grade.py test/max_3/max_3.py test/max_3/max_3_1.py
 ```
 it should return something like this and saved the result to `res` folder
 ```
