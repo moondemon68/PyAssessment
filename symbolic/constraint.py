@@ -38,13 +38,18 @@ class Constraint:
 
 		return asserts, self.predicate	       
 
+	def getPath(self):
+		if self.parent == None:
+			return ''
+		return self.parent.getPath() + ' ' + str(self.predicate)
+
 	def getLength(self):
 		if self.parent == None:
 			return 0
 		return 1 + self.parent.getLength()
 
 	def __str__(self):
-		return str(self.predicate) + "  (processed: %s, path_len: %d)" % (self.processed,self.getLength())
+		return str(self.predicate) + "  (processed: %s, path_len: %d, path: %s)" % (self.processed, self.getLength(), self.getPath())
 
 	def __repr__(self):
 		s = repr(self.predicate) + " (processed: %s)" % (self.processed)

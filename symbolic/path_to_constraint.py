@@ -15,9 +15,9 @@ class PathToConstraint:
 		self.current_constraint = self.root_constraint
 		self.expected_path = None
 
-	def reset(self,expected):
+	def reset(self, expected):
 		self.current_constraint = self.root_constraint
-		if expected==None:
+		if expected == None:
 			self.expected_path = None
 		else:
 			self.expected_path = []
@@ -31,22 +31,15 @@ class PathToConstraint:
 		Branch can be either True or False."""
 
 		# add both possible predicate outcomes to constraint (tree)
-		# print('symbolic_type:')
-		# print(symbolic_type.toString())
 		p = Predicate(symbolic_type, branch)
-		# print('Predicate:')
-		# print(p)
 		p.negate()
-		# log.debug("negative: %s" % p)
 		cneg = self.current_constraint.findChild(p)
 		p.negate()
-		# log.debug("positive: %s" % p)
 		c = self.current_constraint.findChild(p)
 
 		if c is None:
 			c = self.current_constraint.addChild(p)
-			# print('whichBranch:')
-			# print(c)
+
 			# we add the new constraint to the queue of the engine for later processing
 			log.debug("New constraint: %s" % c)
 			self.add(c)

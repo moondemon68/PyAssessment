@@ -20,8 +20,6 @@ class ExplorationEngine:
 		for n in funcinv.getNames():
 			self.symbolic_inputs[n] = funcinv.createArgumentValue(n)
 
-		# print(self.symbolic_inputs)
-
 		self.constraints_to_solve = deque([])
 		self.num_processed_constraints = 0
 
@@ -29,7 +27,8 @@ class ExplorationEngine:
 		# link up SymbolicObject to PathToConstraint in order to intercept control-flow
 		symbolic_type.SymbolicObject.SI = self.path
 
-		self.solver = Z3Wrapper()
+		if solver == "z3":
+			self.solver = Z3Wrapper()
 
 		# outputs
 		self.generated_inputs = []
@@ -41,11 +40,6 @@ class ExplorationEngine:
 		constraint.inputs = self._getInputs()
 
 	def explore(self, max_iterations=0):
-		# print('==============================================')
-		# print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-		# print('==============================================')
-		# print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-		# print('==============================================')
 		self._oneExecution()
 		iterations = 1
 		if max_iterations != 0 and iterations >= max_iterations:
@@ -53,28 +47,15 @@ class ExplorationEngine:
 			return self.execution_return_values
 
 		while not self._isExplorationComplete():
-			# print('\n')
-			# print('\n')
-			# print("before====")
-			# self._printConstraintsDeque()
-			# print("*************")
 			selected = self.constraints_to_solve.popleft()
-			# print("remaining====")
-			# print(self.constraints_to_solve)
-			# print("*************")
-			# print("selected====")
-			# print(selected)
-			# print("============")
 			if selected.processed:
 				continue
-			self._setInputs(selected.inputs)			
+			self._setInputs(selected.inputs)
 
 			log.info("Selected constraint %s" % selected)
 			asserts, query = selected.getAssertsAndQuery()
 			model = self.solver.findCounterexample(asserts, query)
 
-			# print("--model--")
-			# print(model)
 			if model == None:
 				continue
 			else:
@@ -122,17 +103,11 @@ class ExplorationEngine:
 		args = self.symbolic_inputs
 		inputs = [ (k,self._getConcrValue(args[k])) for k in args ]
 		self.generated_inputs.append(inputs)
-		# print('inp=',inputs)
+		# print('inputs:',inputs)
 		
-	def _oneExecution(self,expected_path=None):
+	def _oneExecution(self, expected_path=None):
 		self._recordInputs()
 		self.path.reset(expected_path)
-		# print('sym_inp=',self.symbolic_inputs['a'].toString())
 		ret = self.invocation.callFunction(self.symbolic_inputs)
-		# print('ret=',ret)
+		# print('ret:', ret)
 		self.execution_return_values.append(ret)
-
-	def _printConstraintsDeque(self):
-		for i in self.constraints_to_solve:
-			print(i)
-			print('---\n')

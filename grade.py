@@ -38,7 +38,7 @@ parser.add_option("-m", "--max-iters", dest="max_iters", type="int", help="Run s
 (options, args) = parser.parse_args()
 
 if not (options.logfile == ""):
-	logging.basicConfig(filename=options.logfile,level=logging.DEBUG)
+	logging.basicConfig(filename=options.logfile, level=logging.DEBUG, filemode='w', format='%(asctime)s %(levelname)8s %(name)20s: %(message)s')
 
 if len(args) == 0 or not os.path.exists(args[0]):
 	parser.error("Missing app to execute")
@@ -59,12 +59,19 @@ print ("Grading: " + appStudent.getFile() + "." + appStudent.getEntry())
 
 result = None
 try:
+	logging.debug('Exploring reference application')
 	explorationEngine = ExplorationEngine(app.createInvocation(), "z3")
 	generatedInputs, returnVals, path = explorationEngine.explore(options.max_iters)
+	# print(explorationEngine.path.toDot())
+
+	logging.debug('Exploring student application')
 	explorationEngineStudent = ExplorationEngine(appStudent.createInvocation(), "z3")
 	generatedInputsStudent, returnValsStudent, pathStudent = explorationEngineStudent.explore(options.max_iters)
+	# print(explorationEngine.path.toDot())
+
 	generatedInputs += generatedInputsStudent
 	returnVals += returnValsStudent
+	logging.debug('Grading')
 	gradingEngine = GradingEngine(app.createInvocation(), appStudent.createInvocation(), "z3")
 	tested_case, wrong_case = gradingEngine.grade(generatedInputs, returnVals)
 	
