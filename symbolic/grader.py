@@ -82,7 +82,7 @@ class GradingEngine:
 			# 	print(res)
 			# 	print(pathDeviationForm)
 			self.add_to_tested(res, ret, retStudent)
-			if not isinstance(ret, SymbolicInteger) or not isinstance(retStudent, SymbolicInteger):
+			if not isinstance(ret, SymbolicInteger) or not isinstance(retStudent, SymbolicInteger) or retStudent.name == "se": # se is a wrapper string for operations (refer symbolic_int.py)
 				continue
 			retSym = self.translator.symToZ3(ret.name)
 			retStudentSym = self.translator.symToZ3(retStudent.name)
@@ -116,7 +116,6 @@ class GradingEngine:
 			self.wrong_case[tuple(sorted(case))] = (output_ref, output_stud)
 	
 	def execute_program(self, sym_inp):
-		# print(sym_inp)
 		for inp in sym_inp:
 			self._updateSymbolicParameter(inp[0], inp[1])
 		ret = self.invocation.callFunction(self.symbolic_inputs)
@@ -124,8 +123,10 @@ class GradingEngine:
 		# self._printPCDeque()
 		pc = self.translator.pcToZ3(self.path_constraints)
 		self.path_constraints = deque([])
+		print('Execute program', self.symbolic_inputs)
 		retStudent = self.invocationStudent.callFunction(self.symbolic_inputs)
 		# print('retStudent: '+str(retStudent.val))
+		print('Execute program 2', retStudent.name)
 		# self._printPCDeque()
 		pcStudent = self.translator.pcToZ3(self.path_constraints)
 		self.path_constraints = deque([])
