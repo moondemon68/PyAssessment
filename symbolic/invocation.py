@@ -7,7 +7,7 @@ class FunctionInvocation:
 		self.arg_constructor = {}
 		self.initial_value = {}
 
-	def callFunction(self,args):
+	def callFunction(self, args):
 		self.reset()
 		return self.function(**args)
 

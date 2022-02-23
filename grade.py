@@ -56,18 +56,19 @@ if app == None or appStudent == None:
 print ("Reference: " + app.getFile() + "." + app.getEntry())
 print ("Grading: " + appStudent.getFile() + "." + appStudent.getEntry())
 
-
 result = None
 try:
 	logging.debug('Exploring reference application')
 	explorationEngine = ExplorationEngine(app.createInvocation(), "z3")
 	generatedInputs, returnVals, path = explorationEngine.explore(options.max_iters)
-	# print(explorationEngine.path.toDot())
+	with open('logs/reference.dot', 'w') as outfile:
+		print(explorationEngine.path.toDot(), file=outfile)
 
 	logging.debug('Exploring student application')
 	explorationEngineStudent = ExplorationEngine(appStudent.createInvocation(), "z3")
 	generatedInputsStudent, returnValsStudent, pathStudent = explorationEngineStudent.explore(options.max_iters)
-	# print(explorationEngine.path.toDot())
+	with open('logs/student.dot', 'w') as outfile:
+		print(explorationEngineStudent.path.toDot(), file=outfile)
 
 	generatedInputs += generatedInputsStudent
 	returnVals += returnValsStudent

@@ -4,6 +4,8 @@ from collections import deque
 import logging
 import os
 
+from symbolic.constraint import Constraint
+
 from .z3_wrap import Z3Wrapper
 from .path_to_constraint import PathToConstraint
 from .invocation import FunctionInvocation
@@ -44,7 +46,7 @@ class ExplorationEngine:
 		iterations = 1
 		if max_iterations != 0 and iterations >= max_iterations:
 			log.debug("Maximum number of iterations reached, terminating")
-			return self.execution_return_values
+			return self.generated_inputs, self.execution_return_values, self.path
 
 		while not self._isExplorationComplete():
 			selected = self.constraints_to_solve.popleft()
@@ -81,7 +83,7 @@ class ExplorationEngine:
 	def _getInputs(self):
 		return self.symbolic_inputs.copy()
 
-	def _setInputs(self,d):
+	def _setInputs(self, d):
 		self.symbolic_inputs = d
 
 	def _isExplorationComplete(self):
@@ -93,8 +95,8 @@ class ExplorationEngine:
 			log.info("%d constraints yet to solve (total: %d, already solved: %d)" % (num_constr, self.num_processed_constraints + num_constr, self.num_processed_constraints))
 			return False
 
-	def _getConcrValue(self,v):
-		if isinstance(v,SymbolicType):
+	def _getConcrValue(self, v):
+		if isinstance(v, SymbolicType):
 			return v.getConcrValue()
 		else:
 			return v
@@ -105,9 +107,9 @@ class ExplorationEngine:
 		self.generated_inputs.append(inputs)
 		# print('inputs:',inputs)
 		
-	def _oneExecution(self, expected_path=None):
+	def _oneExecution(self, expected_path: Constraint = None):
 		self._recordInputs()
+		print(expected_path)
 		self.path.reset(expected_path)
 		ret = self.invocation.callFunction(self.symbolic_inputs)
-		# print('ret:', ret)
 		self.execution_return_values.append(ret)
