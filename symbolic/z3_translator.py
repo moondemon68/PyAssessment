@@ -1,8 +1,11 @@
 # Copyright: see copyright.txt
 
+from collections import deque
 import sys
 import ast
 import logging
+from typing import Any, Tuple
+import utils
 
 from z3 import *
 from .z3_expr.integer import Z3Integer
@@ -12,49 +15,27 @@ from .symbolic_types.symbolic_int import SymbolicInteger
 log = logging.getLogger("se.z3")
 
 class Z3Translator(object):
-	def __init__(self):
+	def __init__(self) -> None:
 		self.N = 32
 		self.asserts = None
 		self.query = None
 		self.use_lia = True
 		self.z3_expr = None
 
-	def findCounterexample(self, asserts, query):
-		"""Tries to find a counterexample to the query while
-	  	 asserts remains valid."""
-		# print('====Z3======')
-		# print(asserts)
-		# print(query)
-		# print('============')
-		self.solver = Solver()
-		self.query = query
-		self.asserts = self._coneOfInfluence(asserts,query)
-		res = self._findModel()
-		log.debug("Query -- %s" % self.query)
-		log.debug("Asserts -- %s" % asserts)
-		log.debug("Cone -- %s" % self.asserts)
-		log.debug("Result -- %s" % res)
-		return res
-
-	def pcToZ3(self, pc):
+	def pcToZ3(self, pc: deque) -> Tuple:
 		pcInZ3 = ()
-		# print('pc')
-		# print(pc)
 		for pc_item in pc:
 			pc_expression = pc_item.symtype.expr
 			pc_res = pc_item.result
-			# print(pc_expression)
 			z3_constraint = self.cToZ3(pc_expression, pc_res)
-			# print(z3_constraint)
-			pcInZ3+= (z3_constraint,)
+			pcInZ3 += (z3_constraint,)
 		return pcInZ3
-	# private
 
-	def cToZ3(self, expr, res):
+	def cToZ3(self, expr: (list | SymbolicInteger | int), res: bool) -> Any:
 		if isinstance(expr, list):
-			op = expr[0]
+			op: str = expr[0]
 			args = [ self.cToZ3(a, res) for a in expr[1:] ]
-			z3_l,z3_r = args[0],args[1]
+			z3_l, z3_r = args[0], args[1]
 
 			# arithmetical operations
 			if op == "+":
@@ -118,19 +99,30 @@ class Z3Translator(object):
 		elif isinstance(expr, int):
 			return IntVal(expr)
 
-	def symToZ3(self, sym_str):
+	def symToZ3(self, sym_str: str) -> ArithRef:
 		return Int(sym_str)
 
-	def modelToInp(self, m):
+	def modelToInp(self, m: list) -> list:
 		length = len(m)
 		return_input = []
-		# print(m)
 		for i in range(length):
 			return_input.append((m[i].name(), int(m[m[i]].as_string())))
 		return return_input
 
+	def findCounterexample(self, asserts, query):
+		"""Tries to find a counterexample to the query while
+	  	 asserts remains valid."""
+		self.solver = Solver()
+		self.query = query
+		self.asserts = self._coneOfInfluence(asserts, query)
+		res = self._findModel()
+		log.debug("Query -- %s" % self.query)
+		log.debug("Asserts -- %s" % asserts)
+		log.debug("Cone -- %s" % self.asserts)
+		log.debug("Result -- %s" % res)
+		return res
 	# this is very inefficient
-	def _coneOfInfluence(self,asserts,query):
+	def _coneOfInfluence(self, asserts, query):
 		cone = []
 		cone_vars = set(query.getVars())
 		ws = [ a for a in asserts if len(set(a.getVars()) & cone_vars) > 0 ]

@@ -7,7 +7,7 @@ from . symbolic_type import SymbolicObject
 # we can see a SymbolicInteger is both symbolic (SymbolicObject) and 
 # concrete (int)
 
-class SymbolicInteger(SymbolicObject,int):
+class SymbolicInteger(SymbolicObject, int):
 	# since we are inheriting from int, we need to use new
 	# to perform construction correctly
 	def __new__(cls, name, v, expr=None):
@@ -20,13 +20,13 @@ class SymbolicInteger(SymbolicObject,int):
 	def getConcrValue(self):
 		return self.val
 
-	def wrap(conc,sym):
-		return SymbolicInteger("se",conc,sym)
+	def wrap(conc, sym):
+		return SymbolicInteger("se", conc, sym)
 
 	def __hash__(self):
 		return hash(self.val)
 
-	def _op_worker(self,args,fun,op):
+	def _op_worker(self, args, fun, op):
 		return self._do_sexpr(args, fun, op, SymbolicInteger.wrap)
 
 # now update the SymbolicInteger class for operations we
@@ -43,16 +43,16 @@ ops =  [("add",    "+"  ),\
 	("lshift", "<<" ),\
 	("rshift", ">>" ) ]
 
-def make_method(method,op,a):
+def make_method(method, op, a):
 	code  = "def %s(self,other):\n" % method
-	code += "   return self._op_worker(%s,lambda x,y : x %s y, \"%s\")" % (a,op,op)
+	code += "   return self._op_worker(%s,lambda x,y : x %s y, \"%s\")" % (a, op, op)
 	locals_dict = {}
 	exec(code, globals(), locals_dict)
-	setattr(SymbolicInteger,method,locals_dict[method])
+	setattr(SymbolicInteger, method, locals_dict[method])
 
-for (name,op) in ops:
+for (name, op) in ops:
 	method  = "__%s__" % name
-	make_method(method,op,"[self,other]")
+	make_method(method, op, "[self,other]")
 	rmethod  = "__r%s__" % name
-	make_method(rmethod,op,"[other,self]")
+	make_method(rmethod, op, "[other,self]")
 

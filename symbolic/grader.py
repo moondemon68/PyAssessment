@@ -1,6 +1,9 @@
 from collections import deque
 import logging
-import os
+from typing import Any, Tuple
+
+from symbolic.constraint import Constraint
+from symbolic.predicate import Predicate
 
 from .z3_wrap import Z3Wrapper
 from .z3_translator import Z3Translator
@@ -13,7 +16,7 @@ from z3 import *
 log = logging.getLogger("se.conc")
 
 class GradingEngine:
-	def __init__(self, funcinv, funcinvStudent, solver="z3"):
+	def __init__(self, funcinv: FunctionInvocation, funcinvStudent: FunctionInvocation, solver="z3") -> None:
 		self.tested_case = {}
 		self.wrong_case = {}
 		self.invocation = funcinv
@@ -44,67 +47,46 @@ class GradingEngine:
 		self.generated_inputs = []
 		self.execution_return_values = []
 
-	def addConstraint(self, constraint):
+	def addConstraint(self, constraint: Constraint) -> None:
 		self.constraints_to_solve.append(constraint)
 		# make sure to remember the input that led to this constraint
 		constraint.inputs = self._getInputs()
 
-	def addToPathConstraint(self, pred):
+	def addToPathConstraint(self, pred: Predicate) -> None:
 		self.path_constraints.append(pred)
 
-	def grade(self, generated_inputs, execution_return_values):
-		# print(generated_inputs)
-		# print(execution_return_values)
+	def grade(self, generated_inputs: list, execution_return_values: list) -> Tuple[dict, dict]:
 		self.default_input = generated_inputs[0][:]
 		for generated_input in generated_inputs:
-			# print('from set: ')
+			# path deviation check
 			pc, pcStudent, ret, retStudent = self.execute_program(generated_input)
-			# if ret.val != retStudent.val:
-			# 	print('\33[41mgen input - implementation is incorrect:\033[0m')
-			# 	print(generated_input)
-			# else:
-			# 	print('gen input')
-			# 	print(generated_input)
 			self.add_to_tested(generated_input, ret, retStudent)
-			pathDeviationForm = self.path_deviation_builder(pc, pcStudent)
-			sat, res = self.z3_solve(pathDeviationForm)
-			if sat != 'sat':
+			pathDeviationFormula = self.path_deviation_builder(pc, pcStudent)
+			sat, res = self.z3_solve(pathDeviationFormula)
+			if sat == 'unsat':
 				# print('no path deviation, skipping...')
 				continue
-			# print('from path dev: ')
+
+			# path equivalence check
 			pc, pcStudent, ret, retStudent = self.execute_program(res)
-			# if ret.val != retStudent.val:
-			# 	print('\33[41mpath dev - implementation is incorrect:\033[0m')
-			# 	print(res)
-			# 	print(pathDeviationForm)
-			# else:
-			# 	print('path dev')
-			# 	print(res)
-			# 	print(pathDeviationForm)
 			self.add_to_tested(res, ret, retStudent)
-			if not isinstance(ret, SymbolicInteger) or not isinstance(retStudent, SymbolicInteger) or ret.name == "se" or retStudent.name == "se": # se is a wrapper string for operations (refer symbolic_int.py), so we can ignore it as it won't affect the result
+			if not isinstance(ret, SymbolicInteger) or not isinstance(retStudent, SymbolicInteger) or ret.name == "se" or retStudent.name == "se":
+				# se is a wrapper string for operations (refer symbolic_int.py), so we can ignore it as it won't affect the result
 				continue
 			retSym = self.translator.symToZ3(ret.name)
 			retStudentSym = self.translator.symToZ3(retStudent.name)
-			pathEquivalenceForm = self.path_equivalence_builder(pc, pcStudent, retSym, retStudentSym)
-			sat, res = self.z3_solve(pathEquivalenceForm)
-			if sat != 'sat':
+			pathEquivalenceFormula = self.path_equivalence_builder(pc, pcStudent, retSym, retStudentSym)
+			sat, res = self.z3_solve(pathEquivalenceFormula)
+			if sat == 'unsat':
 				# print('path is equivalent, skipping...')
 				continue
-			# print('from path equiv: ')
+			
+			# path equivalence check
 			pc, pcStudent, ret, retStudent = self.execute_program(res)
-			# if ret.val != retStudent.val:
-			# 	print('\33[41mpath equivalence - implementation is incorrect\033[0m')
-			# 	print(res)
-			# 	print(pathEquivalenceForm)
-			# else:
-			# 	print('path equivalence')
-			# 	print(res)
-			# 	print(pathEquivalenceForm)
 			self.add_to_tested(res, ret, retStudent)
 		return self.tested_case, self.wrong_case
 	
-	def add_to_tested(self, case, output_ref, output_stud):
+	def add_to_tested(self, case: list, output_ref: Any, output_stud: Any) -> None:
 		if isinstance(output_ref, SymbolicInteger):
 			output_ref = output_ref.val
 		if isinstance(output_stud, SymbolicInteger):
@@ -115,35 +97,27 @@ class GradingEngine:
 		if output_ref != output_stud:
 			self.wrong_case[tuple(sorted(case))] = (output_ref, output_stud)
 	
-	def execute_program(self, sym_inp):
+	def execute_program(self, sym_inp: list) -> Tuple[BoolRef, BoolRef, Any, Any]:
 		for inp in sym_inp:
 			self._updateSymbolicParameter(inp[0], inp[1])
 		ret = self.invocation.callFunction(self.symbolic_inputs)
-		# print('ret: '+str(ret.val))
-		# self._printPCDeque()
 		pc = self.translator.pcToZ3(self.path_constraints)
 		self.path_constraints = deque([])
 		retStudent = self.invocationStudent.callFunction(self.symbolic_inputs)
-		# print('retStudent: '+str(retStudent.val))
 		pcStudent = self.translator.pcToZ3(self.path_constraints)
 		self.path_constraints = deque([])
-		# ret is SymbolicInteger
-		# ret.name
-		# ret.val
 		return And(pc), And(pcStudent), ret, retStudent
 
-	def path_deviation_builder(self, a, b):
+	def path_deviation_builder(self, a: BoolRef, b: BoolRef) -> (Probe | BoolRef):
 		return Or(And(a, Not(b)), And(b, Not(a)))
 
-	def path_equivalence_builder(self, a, b, oa, ob):
+	def path_equivalence_builder(self, a: BoolRef, b: BoolRef, oa: ArithRef, ob: ArithRef) -> (Probe | BoolRef):
 		return And(oa!=ob, And(a, b))
 
-	def z3_solve(self, formula):
+	def z3_solve(self, formula: (Probe | BoolRef)) -> Tuple[str, list]:
 		s = Solver()
 		s.add(formula)
 		sat = s.check()
-		# print(s.check())
-		# print(s.model())
 		if repr(sat) == 'sat':
 			res = self.translator.modelToInp(s.model())
 			res = self.fill_default(res)
@@ -151,16 +125,12 @@ class GradingEngine:
 		else:
 			return 'unsat', None
 	
-	def fill_default(self, res):
+	def fill_default(self, res: list) -> list:
 		new_res = res[:]
-		# print(self.default_input)
-		# print(new_res)
 		for i in self.default_input:
 			found = False
 			for j in new_res:
-				# print(i, j)
 				if i[0] == j[0]:
-					# print(i, j)
 					found = True
 					break
 			if not found:
@@ -169,21 +139,21 @@ class GradingEngine:
 
 	# private
 
-	def _updateSymbolicParameter(self, name, val):
+	def _updateSymbolicParameter(self, name: str, val: Any) -> None:
 		self.symbolic_inputs[name] = self.invocation.createArgumentValue(name,val)
 
-	def _getInputs(self):
+	def _getInputs(self) -> None:
 		return self.symbolic_inputs.copy()
 
-	def _setInputs(self,d):
+	def _setInputs(self, d: dict) -> None:
 		self.symbolic_inputs = d
 
-	def _printPCDeque(self):
+	def _printPCDeque(self) -> None:
 		for i in self.path_constraints:
 			print(i)
 			print('---\n')
 
-	def _pretty_print(self, d):
+	def _pretty_print(self, d: dict) -> None:
 		print("{")
 		for key, value in d.items():
 			print('    ' + str(key) + ' : ' + str(value) + ',')

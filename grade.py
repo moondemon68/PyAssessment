@@ -9,11 +9,12 @@ from symbolic.loader import *
 from symbolic.explore import ExplorationEngine
 from symbolic.grader import GradingEngine
 
-def pretty_print(d):
+def pretty_print(d: dict) -> None:
 	print("{")
 	for key, value in d.items():
 		print('    ' + str(key) + ' : ' + str(value) + ',')
 	print("}")
+	print()
 
 def tracefunc(frame, event, arg, indent=[0]):
 	if event == "call":
@@ -48,8 +49,8 @@ filename = os.path.abspath(args[0])
 filenameStudent = os.path.abspath(args[1])
 	
 # Get the object describing the application
-app: str = loaderFactory(filename)
-appStudent: str = loaderFactory(filenameStudent)
+app = loaderFactory(filename)
+appStudent = loaderFactory(filenameStudent)
 if app == None or appStudent == None:
 	sys.exit(1)
 
@@ -88,15 +89,15 @@ try:
 	print('======')
 	print('RESULT')
 	print('======')
-	print('\ntested: ')
+	print('tested: ')
 	pretty_print(tested_case)
-	print('\ntested from path dev or path eq: ')
+	print('tested from path dev or path eq: ')
 	pretty_print(tested_case_from_formula)
-	print('\nwrong: ')
+	print('wrong: ')
 	pretty_print(wrong_case)
-	print('\nwrong from path dev or path eq: ')
+	print('wrong from path dev or path eq: ')
 	pretty_print(wrong_case_from_formula)
-	print('\ngrade: ')
+	print('grade: ')
 	final_grade = (len(tested_case) - len(wrong_case)) / len(tested_case) * 100
 	print(str(final_grade)+'%')
 	tested_case = {str(k):v for k, v in tested_case.items()}

@@ -21,10 +21,6 @@ class Z3Wrapper(object):
 	def findCounterexample(self, asserts, query):
 		"""Tries to find a counterexample to the query while
 	  	 asserts remains valid."""
-		# print('====Z3======')
-		# print(asserts)
-		# print(query)
-		# print('============')
 		self.solver = Solver()
 		self.query = query
 		self.asserts = self._coneOfInfluence(asserts,query)
@@ -76,8 +72,6 @@ class Z3Wrapper(object):
 			self.solver.pop()
 			self.N = self.N+8
 			if self.N <= 64: print("expanded bit width to "+str(self.N)) 
-		#print("Assertions")
-		#print(self.solver.assertions())
 		if ret == unsat:
 			res = None
 		elif ret == unknown:

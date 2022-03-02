@@ -135,7 +135,7 @@ class SymbolicObject(SymbolicType,object):
 	def __bool__(self):
 		ret = bool(self.getConcrValue())
 		if SymbolicObject.SI != None:
-			SymbolicObject.SI.whichBranch(ret,self)
+			SymbolicObject.SI.whichBranch(ret, self)
 		# print(a)
 		return ret
 

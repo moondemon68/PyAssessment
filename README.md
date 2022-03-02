@@ -12,7 +12,10 @@ This repository will be the deliverable of my final project.
 
 ## Getting Started
 1. Make sure you have Python 3.x installed.
-2. Install Z3 [here](https://github.com/Z3Prover/z3).
+2. Install Z3 [here](https://github.com/Z3Prover/z3) or using pip.
+```
+pip install z3-solver
+```
 3. For MacOS, open `setup.sh` and change the path according to your local machine then run:
 ```
 . pyjudge/setup.sh

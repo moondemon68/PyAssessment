@@ -3,6 +3,7 @@
 from collections import deque
 import logging
 import os
+from typing import Any, Tuple
 
 from symbolic.constraint import Constraint
 
@@ -14,7 +15,7 @@ from .symbolic_types import symbolic_type, SymbolicType
 log = logging.getLogger("se.conc")
 
 class ExplorationEngine:
-	def __init__(self, funcinv, solver="z3"):
+	def __init__(self, funcinv: FunctionInvocation, solver="z3") -> None:
 		self.invocation = funcinv
 		# the input to the function
 		self.symbolic_inputs = {}  # string -> SymbolicType
@@ -36,12 +37,12 @@ class ExplorationEngine:
 		self.generated_inputs = []
 		self.execution_return_values = []
 
-	def addConstraint(self, constraint):
+	def addConstraint(self, constraint: Constraint) -> None:
 		self.constraints_to_solve.append(constraint)
 		# make sure to remember the input that led to this constraint
 		constraint.inputs = self._getInputs()
 
-	def explore(self, max_iterations=0):
+	def explore(self, max_iterations=0) -> Tuple[list, list, PathToConstraint]:
 		self._oneExecution()
 		iterations = 1
 		if max_iterations != 0 and iterations >= max_iterations:
@@ -77,16 +78,16 @@ class ExplorationEngine:
 
 	# private
 
-	def _updateSymbolicParameter(self, name, val):
+	def _updateSymbolicParameter(self, name: str, val: Any) -> None:
 		self.symbolic_inputs[name] = self.invocation.createArgumentValue(name,val)
 
-	def _getInputs(self):
+	def _getInputs(self) -> dict:
 		return self.symbolic_inputs.copy()
 
-	def _setInputs(self, d):
+	def _setInputs(self, d: Any) -> None:
 		self.symbolic_inputs = d
 
-	def _isExplorationComplete(self):
+	def _isExplorationComplete(self) -> bool:
 		num_constr = len(self.constraints_to_solve)
 		if num_constr == 0:
 			log.info("Exploration complete")
@@ -95,21 +96,20 @@ class ExplorationEngine:
 			log.info("%d constraints yet to solve (total: %d, already solved: %d)" % (num_constr, self.num_processed_constraints + num_constr, self.num_processed_constraints))
 			return False
 
-	def _getConcrValue(self, v):
+	def _getConcrValue(self, v: SymbolicType) -> Any:
 		if isinstance(v, SymbolicType):
 			return v.getConcrValue()
 		else:
 			return v
 
-	def _recordInputs(self):
+	def _recordInputs(self) -> None:
 		args = self.symbolic_inputs
 		inputs = [ (k,self._getConcrValue(args[k])) for k in args ]
 		self.generated_inputs.append(inputs)
 		# print('inputs:',inputs)
 		
-	def _oneExecution(self, expected_path: Constraint = None):
+	def _oneExecution(self, expected_path: Constraint = None) -> None:
 		self._recordInputs()
-		print(expected_path)
 		self.path.reset(expected_path)
 		ret = self.invocation.callFunction(self.symbolic_inputs)
 		self.execution_return_values.append(ret)

@@ -1,33 +1,35 @@
 # Copyright - see copyright.txt
 
+from symbolic.symbolic_types.symbolic_type import SymbolicType
+
+
 class Predicate:
 	"""Predicate is one specific ``if'' encountered during the program execution.
 	   """
-	def __init__(self, st, result):
-		# print(st.expr[1].name, st.expr[0], st.expr[2].name, result)
+	def __init__(self, st: SymbolicType, result: bool) -> None:
 		self.symtype = st
 		self.result = result
 
-	def getVars(self):
+	def getVars(self) -> list:
 		return self.symtype.getVars()
 
-	def __eq__(self, other):
+	def __eq__(self, other: 'Predicate') -> bool:
 		if isinstance(other, Predicate):
 			res = self.result == other.result and self.symtype.symbolicEq(other.symtype)
 			return res
 		else:
 			return False
 
-	def __hash__(self):
+	def __hash__(self) -> int:
 		return hash(self.symtype)
 
-	def __str__(self):
+	def __str__(self) -> str:
 		return self.symtype.toString() + " (%s)" % (self.result)
 
-	def __repr__(self):
+	def __repr__(self) -> str:
 		return self.__str__()
 
-	def negate(self):
+	def negate(self) -> None:
 		"""Negates the current predicate"""
 		assert(self.result is not None)
 		self.result = not self.result

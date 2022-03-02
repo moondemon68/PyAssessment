@@ -8,14 +8,14 @@ from .constraint import Constraint
 log = logging.getLogger("se.pathconstraint")
 
 class PathToConstraint:
-	def __init__(self, add):
+	def __init__(self, add) -> None:
 		self.constraints = {}
 		self.add = add
 		self.root_constraint = Constraint(None, None)
 		self.current_constraint = self.root_constraint
 		self.expected_path = None
 
-	def reset(self, expected):
+	def reset(self, expected: Constraint) -> None:
 		self.current_constraint = self.root_constraint
 		if expected == None:
 			self.expected_path = None
@@ -26,7 +26,7 @@ class PathToConstraint:
 				self.expected_path.append(tmp.predicate)
 				tmp = tmp.parent
 
-	def whichBranch(self, branch, symbolic_type):
+	def whichBranch(self, branch: bool, symbolic_type: Predicate) -> None:
 		""" This function acts as instrumentation.
 		Branch can be either True or False."""
 
@@ -67,13 +67,13 @@ class PathToConstraint:
 
 		self.current_constraint = c
 
-	def toDot(self):
-		# print the thing into DOT format
+	def toDot(self) -> str:
+		# construct DOT format for printing
 		header = "digraph {\n"
 		footer = "\n}\n"
 		return header + self._toDot(self.root_constraint) + footer
 
-	def _toDot(self,c):
+	def _toDot(self, c: Constraint) -> str:
 		if (c.parent == None):
 			label = "root"
 		else:
