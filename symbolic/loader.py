@@ -4,6 +4,8 @@ import inspect
 import re
 import os
 import sys
+from types import ModuleType
+from typing import Any
 from .invocation import FunctionInvocation
 from .symbolic_types import SymbolicInteger, getSymbolic
 
@@ -13,20 +15,20 @@ import builtins
 builtins.len = (lambda x : x.__len__())
 
 class Loader:
-	def __init__(self, filename):
-		self._fileName = os.path.basename(filename)
-		self._fileName = self._fileName[:-3]
-		self._entryPoint = self._fileName
+	def __init__(self, filename: str) -> None:
+		self._fileName: str = os.path.basename(filename)
+		self._fileName: str = self._fileName[:-3]
+		self._entryPoint: str = self._fileName
 		self._resetCallback(True)
 
-	def getFile(self):
+	def getFile(self) -> str:
 		return self._fileName
 
-	def getEntry(self):
+	def getEntry(self) -> str:
 		return self._entryPoint
 	
-	def createInvocation(self):
-		inv = FunctionInvocation(self._execute, self._resetCallback)
+	def createInvocation(self) -> FunctionInvocation:
+		inv: FunctionInvocation = FunctionInvocation(self._execute, self._resetCallback)
 		func = self.app.__dict__[self._entryPoint]
 		argspec = inspect.getargspec(func)
 		# check to see if user specified initial values of arguments
@@ -58,13 +60,13 @@ class Loader:
 		return inv
 
 	# need these here (rather than inline above) to correctly capture values in lambda
-	def _initializeArgumentConcrete(inv,f,val):
+	def _initializeArgumentConcrete(inv, f: str, val) -> None:
 		inv.addArgumentConstructor(f, val, lambda n,v: val)
 
-	def _initializeArgumentSymbolic(inv,f,val,st):
+	def _initializeArgumentSymbolic(inv, f: str, val, st: type) -> None:
 		inv.addArgumentConstructor(f, val, lambda n,v: st(n,v))
 
-	def executionComplete(self, return_vals):
+	def executionComplete(self, return_vals: list) -> bool:
 		if "expected_result" in self.app.__dict__:
 			return self._check(return_vals, self.app.__dict__["expected_result"]())
 		if "expected_result_set" in self.app.__dict__:
@@ -75,15 +77,15 @@ class Loader:
 
 	# -- private
 
-	def _resetCallback(self,firstpass=False):
-		self.app = None
+	def _resetCallback(self, firstpass=False) -> None:
+		self.app: ModuleType = None
 		if firstpass and self._fileName in sys.modules:
 			print("There already is a module loaded named " + self._fileName)
 			raise ImportError()
 		try:
 			if (not firstpass and self._fileName in sys.modules):
 				del(sys.modules[self._fileName])
-			self.app =__import__(self._fileName)
+			self.app: ModuleType =__import__(self._fileName)
 			if not self._entryPoint in self.app.__dict__ or not callable(self.app.__dict__[self._entryPoint]):
 				print("File " +  self._fileName + ".py doesn't contain a function named " + self._entryPoint)
 				raise ImportError()
@@ -92,10 +94,10 @@ class Loader:
 			print(arg)
 			raise ImportError()
 
-	def _execute(self, **args):
+	def _execute(self, **args: dict) -> Any:
 		return self.app.__dict__[self._entryPoint](**args)
 
-	def _toBag(self,l):
+	def _toBag(self, l: list) -> dict:
 		bag = {}
 		for i in l:
 			if i in bag:
@@ -104,7 +106,7 @@ class Loader:
 				bag[i] = 1
 		return bag
 
-	def _check(self, computed, expected, as_bag=True):
+	def _check(self, computed: list, expected: list, as_bag=True) -> bool:
 		b_c = self._toBag(computed)
 		b_e = self._toBag(expected)
 		if as_bag and b_c != b_e or not as_bag and set(computed) != set(expected):
@@ -115,7 +117,7 @@ class Loader:
 			print("%s test passed <---" % self._fileName)
 			return True
 	
-def loaderFactory(filename):
+def loaderFactory(filename: str) -> Loader:
 	if not os.path.isfile(filename) or not re.search(".py$",filename):
 		print("Please provide a Python file to load")
 		return None

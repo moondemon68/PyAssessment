@@ -48,8 +48,8 @@ filename = os.path.abspath(args[0])
 filenameStudent = os.path.abspath(args[1])
 	
 # Get the object describing the application
-app = loaderFactory(filename)
-appStudent = loaderFactory(filenameStudent)
+app: str = loaderFactory(filename)
+appStudent: str = loaderFactory(filenameStudent)
 if app == None or appStudent == None:
 	sys.exit(1)
 
