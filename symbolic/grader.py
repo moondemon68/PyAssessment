@@ -82,7 +82,7 @@ class GradingEngine:
 			# 	print(res)
 			# 	print(pathDeviationForm)
 			self.add_to_tested(res, ret, retStudent)
-			if not isinstance(ret, SymbolicInteger) or not isinstance(retStudent, SymbolicInteger) or retStudent.name == "se": # se is a wrapper string for operations (refer symbolic_int.py)
+			if not isinstance(ret, SymbolicInteger) or not isinstance(retStudent, SymbolicInteger) or ret.name == "se" or retStudent.name == "se": # se is a wrapper string for operations (refer symbolic_int.py), so we can ignore it as it won't affect the result
 				continue
 			retSym = self.translator.symToZ3(ret.name)
 			retStudentSym = self.translator.symToZ3(retStudent.name)
@@ -123,11 +123,8 @@ class GradingEngine:
 		# self._printPCDeque()
 		pc = self.translator.pcToZ3(self.path_constraints)
 		self.path_constraints = deque([])
-		print('Execute program', self.symbolic_inputs)
 		retStudent = self.invocationStudent.callFunction(self.symbolic_inputs)
 		# print('retStudent: '+str(retStudent.val))
-		print('Execute program 2', retStudent.name)
-		# self._printPCDeque()
 		pcStudent = self.translator.pcToZ3(self.path_constraints)
 		self.path_constraints = deque([])
 		# ret is SymbolicInteger
