@@ -11,7 +11,7 @@ from .path_constraint import PathConstraint
 from .invocation import FunctionInvocation
 from .symbolic_types import symbolic_type, SymbolicType
 from .symbolic_types.symbolic_int import SymbolicInteger
-from z3 import *
+from z3 import Probe, BoolRef, ArithRef, Or, And, Not, Solver
 
 log = logging.getLogger("se.conc")
 

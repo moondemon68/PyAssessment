@@ -8,6 +8,7 @@ from optparse import OptionParser
 from symbolic.loader import *
 from symbolic.explore import ExplorationEngine
 from symbolic.grader import GradingEngine
+from symbolic.z3_similarity import similarity
 
 def pretty_print(d: dict) -> None:
 	print("{")
@@ -101,22 +102,60 @@ try:
 	print('======')
 	print('RESULT')
 	print('======')
-	print('tested: ')
+	print('tested:')
 	pretty_print(tested_case)
-	print('tested from path dev or path eq: ')
+	print('tested from path dev or path eq:')
 	pretty_print(tested_case_from_formula)
-	print('wrong: ')
+	print('wrong:')
 	pretty_print(wrong_case)
-	print('wrong from path dev or path eq: ')
+	print('wrong from path dev or path eq:')
 	pretty_print(wrong_case_from_formula)
-	print('grade: ')
+	print('grade:')
 	final_grade = (len(tested_case) - len(wrong_case)) / len(tested_case) * 100
 	print(str(final_grade) + '% (' + str(len(tested_case) - len(wrong_case)) + '/' + str(len(tested_case)) + ')')
+	print()
+
+	# Path constraint grading
+	pathConstraints = {}
+	studentScore = 0
+	totalScore = 0
+	for case in tested_case:
+		referenceOutput = tested_case[case][0]
+		studentOutput = tested_case[case][1]
+		referencePathConstraint = tested_case[case][2]
+		studentPathConstraint = tested_case[case][3]
+
+		# calculate similarity of path constraints
+		score = 0
+		if referenceOutput == studentOutput:
+			# if the output is the same, then the path constraint is correct
+			score = 1
+		else:
+			# else, we need to calculate the similarity of the path constraint that lead to the wrong output with the path constraint that lead to the right output
+			score = similarity(referencePathConstraint, studentPathConstraint)
+		
+		# two path constraints may produce different results based on the input, so previously correct path constraints may be wrong now
+		if (referencePathConstraint, studentPathConstraint) not in pathConstraints:
+			pathConstraints[(referencePathConstraint, studentPathConstraint)] = score
+		else:
+			pathConstraints[(referencePathConstraint, studentPathConstraint)] = min(score, pathConstraints[(referencePathConstraint, studentPathConstraint)])
+
+	# calculate score
+	for key in pathConstraints:
+		studentScore += pathConstraints[key]
+		totalScore += 1
+
+	# Print out the results
+	print('path constraints:')
+	pretty_print(pathConstraints)
+	print('path constraint grade:')
+	pathConstraintGrade = studentScore / totalScore * 100
+	print(str(pathConstraintGrade) + '% (' + str(studentScore) + '/' + str(totalScore) + ')')
 
 	# Save the results to a json file
 	tested_case = {str(k):(v[0], v[1]) for k, v in tested_case.items()}	# only get the reference output and the student output
 	wrong_case = {str(k):(v[0], v[1]) for k, v in wrong_case.items()}
-	resultJson = { 'reference': app.getFile(), 'grading': appStudent.getFile(), 'grade': final_grade, 'tested_case': tested_case, 'wrong_case': wrong_case }
+	resultJson = { 'reference': app.getFile(), 'grading': appStudent.getFile(), 'grade': final_grade, 'path_constraint_grade': pathConstraintGrade, 'tested_case': tested_case, 'wrong_case': wrong_case }
 	with open('res/'+app.getFile()+'-'+appStudent.getFile()+'.json', 'w+') as fp:
 		json.dump(resultJson, fp, indent=4)
 	

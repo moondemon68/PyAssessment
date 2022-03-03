@@ -66,6 +66,21 @@ wrong from path dev or path eq:
 
 grade:
 91.66666666666666% (11/12)
+
+path constraints:
+{
+    (And(a >= b, a >= c), And(a <= b, b <= a)) : 0,
+    (And(a >= b, a >= c), And(a > b, a <= c, b <= a)) : 1,
+    (And(a < b, b >= a, b >= c), And(a <= b, b > a, b > c)) : 1,
+    (And(a < b, b >= a, b >= c), And(a <= b, b > a, b <= c)) : 1,
+    (And(a >= b, a < c, b >= a, b < c), And(a <= b, b <= a)) : 1,
+    (And(a < b, b >= a, b < c), And(a <= b, b > a, b <= c)) : 1,
+    (And(a >= b, a < c, b < a), And(a > b, a <= c, b <= a)) : 1,
+    (And(a >= b, a >= c), And(a > b, a > c)) : 1,
+}
+
+path constraint grade:
+87.5% (7/8)
 ```
 
 ## Usage
