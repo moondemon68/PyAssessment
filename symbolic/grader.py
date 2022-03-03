@@ -96,9 +96,9 @@ class GradingEngine:
 			outputStudent = outputStudent.val
 		if tuple(sorted(case)) in self.tested_case:
 			pass
-		self.tested_case[tuple(sorted(case))] = (outputReference, outputStudent, pcReference, pcStudent, source)
+		self.tested_case[tuple(sorted(case))] = [outputReference, outputStudent, pcReference, pcStudent, source]
 		if outputReference != outputStudent:
-			self.wrong_case[tuple(sorted(case))] = (outputReference, outputStudent, pcReference, pcStudent, source)
+			self.wrong_case[tuple(sorted(case))] = [outputReference, outputStudent, pcReference, pcStudent, source]
 	
 	def execute_program(self, sym_inp: list) -> Tuple[BoolRef, BoolRef, Any, Any]:
 		for inp in sym_inp:

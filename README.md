@@ -31,21 +31,41 @@ Grading: max_3_1.max_3_1
 ======
 RESULT
 ======
+tested:
+{
+    (('a', 0), ('b', 0), ('c', 0)) : [0, 0, And(a >= b, a >= c), And(a <= b, b <= a), 'Exploration'],
+    (('a', 0), ('b', -1), ('c', 0)) : [0, 0, And(a >= b, a >= c), And(a > b, a <= c, b <= a), 'PathDeviation'],
+    (('a', 0), ('b', 2), ('c', 0)) : [2, 2, And(a < b, b >= a, b >= c), And(a <= b, b > a, b > c), 'Exploration'],
+    (('a', -1), ('b', 0), ('c', 0)) : [0, 0, And(a < b, b >= a, b >= c), And(a <= b, b > a, b <= c), 'PathDeviation'],
+    (('a', 0), ('b', 0), ('c', 1)) : [1, 1, And(a >= b, a < c, b >= a, b < c), And(a <= b, b <= a), 'Exploration'],
+    (('a', 0), ('b', 0), ('c', -1)) : [0, -1, And(a >= b, a >= c), And(a <= b, b <= a), 'PathEquivalence'],
+    (('a', 1), ('b', 2), ('c', 3)) : [3, 3, And(a < b, b >= a, b < c), And(a <= b, b > a, b <= c), 'Exploration'],
+    (('a', 1), ('b', 0), ('c', 2)) : [2, 2, And(a >= b, a < c, b < a), And(a > b, a <= c, b <= a), 'Exploration'],
+    (('a', 2), ('b', 0), ('c', 0)) : [2, 2, And(a >= b, a >= c), And(a > b, a > c), 'Exploration'],
+    (('a', 0), ('b', 1), ('c', 0)) : [1, 1, And(a < b, b >= a, b >= c), And(a <= b, b > a, b > c), 'Exploration'],
+    (('a', 10), ('b', 0), ('c', 12)) : [12, 12, And(a >= b, a < c, b < a), And(a > b, a <= c, b <= a), 'Exploration'],
+    (('a', 4), ('b', 5), ('c', 8)) : [8, 8, And(a < b, b >= a, b < c), And(a <= b, b > a, b <= c), 'Exploration'],
+}
 
-tested: 
-{(('a', 0), ('b', 0), ('c', 0)): (0, 0), (('a', 0), ('b', 0), ('c', 1)): (1, 1), (('a', 0), ('b', 2), ('c', 0)): (2, 2), (('a', -1), ('b', 0), ('c', 0)): (0, 0), (('a', 0), ('b', 0), ('c', -1)): (0, -1), (('a', 1), ('b', 2), ('c', 3)): (3, 3), (('a', 1), ('b', 0), ('c', 2)): (2, 2), (('a', 0), ('b', -1), ('c', 0)): (0, 0), (('a', 2), ('b', 0), ('c', 0)): (2, 2), (('a', 4), ('b', 5), ('c', 0)): (5, 5), (('a', 2), ('b', 0), ('c', 8)): (8, 8), (('a', 0), ('b', 1), ('c', 2)): (2, 2)}
+tested from path dev or path eq:
+{
+    (('a', 0), ('b', -1), ('c', 0)) : [0, 0, And(a >= b, a >= c), And(a > b, a <= c, b <= a), 'PathDeviation'],
+    (('a', -1), ('b', 0), ('c', 0)) : [0, 0, And(a < b, b >= a, b >= c), And(a <= b, b > a, b <= c), 'PathDeviation'],
+    (('a', 0), ('b', 0), ('c', -1)) : [0, -1, And(a >= b, a >= c), And(a <= b, b <= a), 'PathEquivalence'],
+}
 
-tested from path dev or path eq: 
-{(('a', -1), ('b', 0), ('c', 0)): (0, 0), (('a', 0), ('b', 0), ('c', -1)): (0, -1), (('a', 0), ('b', -1), ('c', 0)): (0, 0)}
+wrong:
+{
+    (('a', 0), ('b', 0), ('c', -1)) : [0, -1, And(a >= b, a >= c), And(a <= b, b <= a), 'PathEquivalence'],
+}
 
-wrong: 
-{(('a', 0), ('b', 0), ('c', -1)): (0, -1)}
+wrong from path dev or path eq:
+{
+    (('a', 0), ('b', 0), ('c', -1)) : [0, -1, And(a >= b, a >= c), And(a <= b, b <= a), 'PathEquivalence'],
+}
 
-wrong from path dev or path eq: 
-{(('a', 0), ('b', 0), ('c', -1)): (0, -1)}
-
-grade: 
-91.66666666666666%
+grade:
+91.66666666666666% (11/12)
 ```
 
 ## Usage

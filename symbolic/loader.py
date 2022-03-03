@@ -70,7 +70,7 @@ class Loader:
 		if "expected_result" in self.app.__dict__:
 			return self._check(return_vals, self.app.__dict__["expected_result"]())
 		if "expected_result_set" in self.app.__dict__:
-			return self._check(return_vals, self.app.__dict__["expected_result_set"](),False)
+			return self._check(return_vals, self.app.__dict__["expected_result_set"](), False)
 		else:
 			# print(self._fileName + ".py contains no expected_result function")
 			return None
