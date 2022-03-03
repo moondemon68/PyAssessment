@@ -224,8 +224,6 @@ class Z3Translator(object):
 		if res == sat:
 			# Does concolic agree with Z3? If not, it may be due to overflow
 			model = self._getModel()
-			#print("Match?")
-			#print(self.solver.assertions)
 			self.solver.pop()
 			mismatch = False
 			for a in self.asserts:
@@ -235,7 +233,6 @@ class Z3Translator(object):
 					break
 			if (not mismatch):
 				mismatch = not (not self.z3_expr.predToZ3(self.query,self.solver,model))
-			#print(mismatch)
 			return (res,mismatch)
 		elif res == unknown:
 			self.solver.pop()

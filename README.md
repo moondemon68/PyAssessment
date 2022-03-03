@@ -69,7 +69,7 @@ grade:
 
 path constraints:
 {
-    (And(a >= b, a >= c), And(a <= b, b <= a)) : 0,
+    (And(a >= b, a >= c), And(a <= b, b <= a)) : 0.5,
     (And(a >= b, a >= c), And(a > b, a <= c, b <= a)) : 1,
     (And(a < b, b >= a, b >= c), And(a <= b, b > a, b > c)) : 1,
     (And(a < b, b >= a, b >= c), And(a <= b, b > a, b <= c)) : 1,
@@ -80,7 +80,7 @@ path constraints:
 }
 
 path constraint grade:
-87.5% (7/8)
+93.75% (7.5/8)
 ```
 
 ## Usage
