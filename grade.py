@@ -99,7 +99,7 @@ try:
 	pretty_print(wrong_case_from_formula)
 	print('grade: ')
 	final_grade = (len(tested_case) - len(wrong_case)) / len(tested_case) * 100
-	print(str(final_grade)+'%')
+	print(str(final_grade) + '% (' + str(len(tested_case) - len(wrong_case)) + '/' + str(len(tested_case)) + ')')
 	tested_case = {str(k):(v[0], v[1]) for k, v in tested_case.items()}	# only get the reference output and the student output
 	wrong_case = {str(k):(v[0], v[1]) for k, v in wrong_case.items()}
 	resultJson = { 'reference': app.getFile(), 'grading': appStudent.getFile(), 'grade': final_grade, 'tested_case': tested_case, 'wrong_case': wrong_case }
