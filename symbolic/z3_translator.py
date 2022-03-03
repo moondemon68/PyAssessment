@@ -99,8 +99,40 @@ class Z3Translator(object):
 		elif isinstance(expr, int):
 			return IntVal(expr)
 
-	def symToZ3(self, sym_str: str) -> ArithRef:
-		return Int(sym_str)
+	def symToZ3(self, sym_str: (str | list)) -> ArithRef:
+		if isinstance(sym_str, str):
+			return Int(sym_str)
+		else:
+			return self.getZ3(sym_str)
+	
+	def getZ3(self, sym: list) -> ArithRef:
+		op, lhs, rhs = sym[0], sym[1], sym[2]
+		if isinstance(lhs, list):
+			lhs = self.getZ3(lhs)
+		elif isinstance(lhs, str):
+			lhs = Int(lhs)
+		if isinstance(rhs, list):
+			rhs = self.getZ3(rhs)
+		elif isinstance(rhs, str):
+			rhs = Int(rhs)
+		if op == "+":
+			return lhs + rhs
+		elif op == "-":
+			return lhs - rhs
+		elif op == "*":
+			return lhs * rhs
+		elif op == "//":
+			return lhs / rhs
+		elif op == "%":
+			return lhs % rhs
+		elif op == "<=":
+			return lhs <= rhs
+		elif op == "<":
+			return lhs < rhs
+		elif op == ">":
+			return lhs > rhs
+		elif op == ">=":
+			return lhs >= rhs
 
 	def modelToInp(self, m: list) -> list:
 		length = len(m)

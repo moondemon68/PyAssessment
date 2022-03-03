@@ -71,13 +71,10 @@ class GradingEngine:
 			# res contains the case that triggered the path deviation, but can still be correct or wrong
 			pc, pcStudent, ret, retStudent = self.execute_program(res)
 			self.add_to_tested(res, ret, retStudent, pc, pcStudent, 'PathDeviation')
-			print(pc, pcStudent)
-			print('===')
-			if not isinstance(ret, SymbolicInteger) or not isinstance(retStudent, SymbolicInteger) or ret.name == "se" or retStudent.name == "se":
-				# se is a wrapper string for operations (refer symbolic_int.py), so we can ignore it as it won't affect the result
+			if not isinstance(ret, SymbolicInteger) or not isinstance(retStudent, SymbolicInteger):
 				continue
-			retSym = self.translator.symToZ3(ret.name)
-			retStudentSym = self.translator.symToZ3(retStudent.name)
+			retSym = self.translator.symToZ3(ret.getSymbolicExpr())
+			retStudentSym = self.translator.symToZ3(retStudent.getSymbolicExpr())
 			pathEquivalenceFormula = self.path_equivalence_builder(pc, pcStudent, retSym, retStudentSym)
 			sat, res = self.z3_solve(pathEquivalenceFormula)
 			if sat == 'unsat':

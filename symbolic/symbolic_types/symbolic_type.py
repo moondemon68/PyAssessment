@@ -1,11 +1,10 @@
 # Copyright: see copyright.txt
 
 import logging
+from typing import Any, Tuple
 
-import utils
 import inspect
 import functools
-import sys
 
 log = logging.getLogger("se.symtype")
 
@@ -24,7 +23,7 @@ class SymbolicType(object):
 	def getConcrValue(self):
 		raise NotImplemented()
 
-	def wrap(conc,sym):
+	def wrap(conc, sym):
 		raise NotImplemented()
 
 	# public funs
@@ -34,44 +33,40 @@ class SymbolicType(object):
 
 	def unwrap(self):
 		if self.isVariable():
-			return (self.getConcrValue(),self)
+			return (self.getConcrValue(), self)
 		else:
-			return (self.getConcrValue(),self.expr)
+			return (self.getConcrValue(), self.expr)
 
 	def getVars(self):
 		if self.isVariable():
 			return [self.name]
-		elif isinstance(self.expr,list):
+		elif isinstance(self.expr, list):
 			return self._getVarsLeaves(self.expr)
 		else:
 			return []
 
 	def _getVarsLeaves(self,l):
-		if isinstance(l,list):
-			return functools.reduce(lambda a, x: self._getVarsLeaves(x) + a,l,[])
-		elif isinstance(l,SymbolicType):
+		if isinstance(l, list):
+			return functools.reduce(lambda a, x: self._getVarsLeaves(x) + a, l, [])
+		elif isinstance(l, SymbolicType):
 			return [l.name]
 		else:
 			return []
 
 	# creating the expression tree
 	def _do_sexpr(self,args,fun,op,wrap):
-		unwrapped = [ (a.unwrap() if isinstance(a,SymbolicType) else (a,a)) for a in args ]
-		args = zip(inspect.getargspec(fun).args, [ c for (c,s) in unwrapped ])
+		unwrapped = [ (a.unwrap() if isinstance(a, SymbolicType) else (a, a)) for a in args ]
+		args = zip(inspect.getargspec(fun).args, [ c for (c, s) in unwrapped ])
 		concrete = fun(**dict([a for a in args]))
-		symbolic = [ op ] + [ s for c,s in unwrapped ]
-		# print('concrete:')
-		# print(concrete)
-		# print('symbolic:')
-		# print(symbolic)
-		return wrap(concrete,symbolic)
+		symbolic = [ op ] + [ s for c, s in unwrapped ]
+		return wrap(concrete, symbolic)
 
 	def symbolicEq(self, other):
 		if not isinstance(other,SymbolicType):
 			return False
 		if self.isVariable() or other.isVariable():
 			return self.name == other.name
-		return self._eq_worker(self.expr,other.expr)
+		return self._eq_worker(self.expr, other.expr)
 
 	def _eq_worker(self, expr1, expr2):
 		if type(expr1) != type(expr2):
@@ -79,22 +74,38 @@ class SymbolicType(object):
 		if isinstance(expr1, list):
 			return len(expr1) == len(expr2) and\
 			       type(expr1[0]) == type(expr2[0]) and\
-                               all([ self._eq_worker(x,y) for x,y in zip(expr1[1:],expr2[1:]) ])
+                               all([ self._eq_worker(x, y) for x, y in zip(expr1[1:], expr2[1:]) ])
 		elif isinstance(expr1, SymbolicType):
 			return expr1.name == expr2.name
 		else:
 			return expr1 == expr2
 
-	def toString(self):
+	def getSymbolicExpr(self) -> Tuple[list, str, int]:
+		if self.isVariable():
+			return self.name
+		else:
+			return self._getSymbolicExpr(self.expr)
+	
+	def _getSymbolicExpr(self, expr: Any) -> Tuple[list, str, int]:
+		if isinstance(expr, list):
+			return [expr[0], self._getSymbolicExpr(expr[1]), self._getSymbolicExpr(expr[2])]
+		elif isinstance(expr, SymbolicType):
+			return expr.getSymbolicExpr()
+		elif isinstance(expr, int):
+			return expr
+		else:
+			return str(expr)
+
+	def toString(self) -> str:
 		if self.isVariable():
 			return self.name + "#" + str(self.getConcrValue())
 		else:
 			return self._toString(self.expr)
 
-	def _toString(self,expr):
-		if isinstance(expr,list):
+	def _toString(self, expr: Any) -> str:
+		if isinstance(expr, list):
 			return "(" + expr[0] + " " + ", ".join([ self._toString(a) for a in expr[1:] ]) + ")"
-		elif isinstance(expr,SymbolicType):
+		elif isinstance(expr, SymbolicType):
 			return expr.toString()
 		else:
 			return str(expr)
@@ -103,13 +114,13 @@ class SymbolicType(object):
 # initialize wrap to return SymbolicInteger for the 
 # relational comparison operators
 
-class SymbolicObject(SymbolicType,object): 
+class SymbolicObject(SymbolicType, object): 
 	def __init__(self, name, expr=None):
-		SymbolicType.__init__(self,name,expr)
+		SymbolicType.__init__(self, name, expr)
 
 	SI = None    # this is set up by ConcolicEngine to link __bool__ to PathConstraint
 
-	def wrap(conc,sym):
+	def wrap(conc, sym):
 		# see __init__.py
 		raise NotImplemented()
 
@@ -122,7 +133,6 @@ class SymbolicObject(SymbolicType,object):
 		ret = bool(self.getConcrValue())
 		if SymbolicObject.SI != None:
 			SymbolicObject.SI.whichBranch(ret, self)
-		# print(a)
 		return ret
 
 	# compute both the symbolic and concrete image of operator
