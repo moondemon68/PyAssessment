@@ -86,31 +86,17 @@ class SymbolicType(object):
 			return expr1 == expr2
 
 	def toString(self):
-		# caller = eval(getframe_expr.format(2))
-		# caller_caller = eval(getframe_expr.format(4))
-		# print ("I was called from", caller)
-		# print ("and was called from", caller_caller)
 		if self.isVariable():
-			# print('isvariable')
 			return self.name + "#" + str(self.getConcrValue())
 		else:
-			# print('not isVariable')
 			return self._toString(self.expr)
 
 	def _toString(self,expr):
 		if isinstance(expr,list):
-			# print('islist')
-			# print(expr)
-			# print(type(expr[0]).__name__)
-			# print(type(expr[1]).__name__)
-			# print(type(expr[2]).__name__)
 			return "(" + expr[0] + " " + ", ".join([ self._toString(a) for a in expr[1:] ]) + ")"
 		elif isinstance(expr,SymbolicType):
-			# print('symbolicTyoe')
 			return expr.toString()
 		else:
-			# print('neither')
-			# print(type(expr).__name__)
 			return str(expr)
 
 # this class is also ABSTRACT although __init__.py does

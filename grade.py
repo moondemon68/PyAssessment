@@ -100,10 +100,10 @@ try:
 	print('grade: ')
 	final_grade = (len(tested_case) - len(wrong_case)) / len(tested_case) * 100
 	print(str(final_grade)+'%')
-	tested_case = {str(k):v for k, v in tested_case.items()}
-	wrong_case = {str(k):v for k, v in wrong_case.items()}
-	resultJson = { 'reference': app.getFile(), 'grading': appStudent.getFile(), 'grade': final_grade, 'tested_case': tested_case, 'wrong_case': wrong_case}
-	with open('res/'+app.getFile()+'-'+appStudent.getFile()+'.json', 'w') as fp:
+	tested_case = {str(k):(v[0], v[1]) for k, v in tested_case.items()}	# only get the reference output and the student output
+	wrong_case = {str(k):(v[0], v[1]) for k, v in wrong_case.items()}
+	resultJson = { 'reference': app.getFile(), 'grading': appStudent.getFile(), 'grade': final_grade, 'tested_case': tested_case, 'wrong_case': wrong_case }
+	with open('res/'+app.getFile()+'-'+appStudent.getFile()+'.json', 'w+') as fp:
 		json.dump(resultJson, fp, indent=4)
 	# check the result
 	result = app.executionComplete(returnVals)

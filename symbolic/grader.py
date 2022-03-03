@@ -60,16 +60,19 @@ class GradingEngine:
 		for generated_input in generated_inputs:
 			# path deviation check
 			pc, pcStudent, ret, retStudent = self.execute_program(generated_input)
-			self.add_to_tested(generated_input, ret, retStudent)
+			self.add_to_tested(generated_input, ret, retStudent, pc, pcStudent, 'Exploration')
 			pathDeviationFormula = self.path_deviation_builder(pc, pcStudent)
 			sat, res = self.z3_solve(pathDeviationFormula)
 			if sat == 'unsat':
 				# print('no path deviation, skipping...')
 				continue
 
-			# path equivalence check
+			# if there is a path deviation, check equivalence using the result of the satisfiability formula to trigger the deviation
+			# res contains the case that triggered the path deviation, but can still be correct or wrong
 			pc, pcStudent, ret, retStudent = self.execute_program(res)
-			self.add_to_tested(res, ret, retStudent)
+			self.add_to_tested(res, ret, retStudent, pc, pcStudent, 'PathDeviation')
+			print(pc, pcStudent)
+			print('===')
 			if not isinstance(ret, SymbolicInteger) or not isinstance(retStudent, SymbolicInteger) or ret.name == "se" or retStudent.name == "se":
 				# se is a wrapper string for operations (refer symbolic_int.py), so we can ignore it as it won't affect the result
 				continue
@@ -81,21 +84,24 @@ class GradingEngine:
 				# print('path is equivalent, skipping...')
 				continue
 			
-			# path equivalence check
+			# there is a deviation and the deviated path is not equal, so student's program is wrong
+			# the test case that made the student's program wrong can be found in res
 			pc, pcStudent, ret, retStudent = self.execute_program(res)
-			self.add_to_tested(res, ret, retStudent)
+			self.add_to_tested(res, ret, retStudent, pc, pcStudent, 'PathEquivalence')
 		return self.tested_case, self.wrong_case
 	
-	def add_to_tested(self, case: list, output_ref: Any, output_stud: Any) -> None:
-		if isinstance(output_ref, SymbolicInteger):
-			output_ref = output_ref.val
-		if isinstance(output_stud, SymbolicInteger):
-			output_stud = output_stud.val
+	# possible sources
+	# Exploration, PathDeviation, PathEquivalence
+	def add_to_tested(self, case: list, outputReference: Any, outputStudent: Any, pcReference: BoolRef, pcStudent: BoolRef, source: str) -> None:
+		if isinstance(outputReference, SymbolicInteger):
+			outputReference = outputReference.val
+		if isinstance(outputStudent, SymbolicInteger):
+			outputStudent = outputStudent.val
 		if tuple(sorted(case)) in self.tested_case:
 			pass
-		self.tested_case[tuple(sorted(case))] = (output_ref, output_stud)
-		if output_ref != output_stud:
-			self.wrong_case[tuple(sorted(case))] = (output_ref, output_stud)
+		self.tested_case[tuple(sorted(case))] = (outputReference, outputStudent, pcReference, pcStudent, source)
+		if outputReference != outputStudent:
+			self.wrong_case[tuple(sorted(case))] = (outputReference, outputStudent, pcReference, pcStudent, source)
 	
 	def execute_program(self, sym_inp: list) -> Tuple[BoolRef, BoolRef, Any, Any]:
 		for inp in sym_inp:
