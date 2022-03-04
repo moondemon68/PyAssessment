@@ -9,7 +9,7 @@ from optparse import OptionParser
 from symbolic.loader import *
 from symbolic.explore import ExplorationEngine
 from symbolic.grader import GradingEngine
-from symbolic.z3_similarity import similarity
+from symbolic.z3_utils.z3_similarity import similarity
 
 def pretty_print(d: dict) -> None:
 	print("{")
@@ -167,6 +167,9 @@ try:
 	print('path constraint grade:')
 	pathConstraintGrade = studentScore / totalScore * 100
 	print(str(pathConstraintGrade) + '% (' + str(studentScore) + '/' + str(totalScore) + ')')
+
+	# Get feedback
+	
 
 	# Save the results to a json file
 	tested_case = {str(k):(v[0], v[1]) for k, v in tested_case.items()}	# only get the reference output and the student output

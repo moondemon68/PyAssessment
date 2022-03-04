@@ -5,8 +5,8 @@ import ast
 import logging
 
 from z3 import *
-from .z3_expr.integer import Z3Integer
-from .z3_expr.bitvector import Z3BitVector
+from ..z3_expr.integer import Z3Integer
+from ..z3_expr.bitvector import Z3BitVector
 
 log = logging.getLogger("se.z3")
 

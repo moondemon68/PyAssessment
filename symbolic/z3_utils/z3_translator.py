@@ -8,9 +8,9 @@ from typing import Any, Tuple
 import utils
 
 from z3 import *
-from .z3_expr.integer import Z3Integer
-from .z3_expr.bitvector import Z3BitVector
-from .symbolic_types.symbolic_int import SymbolicInteger
+from ..z3_expr.integer import Z3Integer
+from ..z3_expr.bitvector import Z3BitVector
+from ..symbolic_types.symbolic_int import SymbolicInteger
 
 log = logging.getLogger("se.z3")
 

@@ -5,8 +5,8 @@ from typing import Any, Tuple
 from symbolic.constraint import Constraint
 from symbolic.predicate import Predicate
 
-from .z3_wrap import Z3Wrapper
-from .z3_translator import Z3Translator
+from .z3_utils.z3_wrap import Z3Wrapper
+from .z3_utils.z3_translator import Z3Translator
 from .path_constraint import PathConstraint
 from .invocation import FunctionInvocation
 from .symbolic_types import symbolic_type, SymbolicType
