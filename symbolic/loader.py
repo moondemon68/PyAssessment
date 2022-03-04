@@ -94,6 +94,9 @@ class Loader:
 			print(arg)
 			raise ImportError()
 
+	def _getFunc(self, **args: dict) -> Any:
+		return self.app.__dict__[self._entryPoint]
+
 	def _execute(self, **args: dict) -> Any:
 		return self.app.__dict__[self._entryPoint](**args)
 

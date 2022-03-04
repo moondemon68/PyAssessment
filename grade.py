@@ -2,7 +2,6 @@ import os
 import sys
 import logging
 import time
-import traceback
 import json
 from optparse import OptionParser
 
@@ -10,6 +9,7 @@ from symbolic.loader import *
 from symbolic.explore import ExplorationEngine
 from symbolic.grader import GradingEngine
 from symbolic.z3_utils.z3_similarity import similarity
+from tracing import traceApp
 
 def pretty_print(d: dict) -> None:
 	print("{")
@@ -167,14 +167,20 @@ try:
 	print('path constraint grade:')
 	pathConstraintGrade = studentScore / totalScore * 100
 	print(str(pathConstraintGrade) + '% (' + str(studentScore) + '/' + str(totalScore) + ')')
+	print()
 
 	# Get feedback
-	
+	visitedLines = traceApp(appStudent, wrong_case)
+	visitedLines = [str(x) for x in visitedLines]
+	feedback = 'Please check line(s) ' + ', '.join(visitedLines) + ' in your program.'
+	print('feedback:')
+	print(feedback)
+	print()
 
 	# Save the results to a json file
 	tested_case = {str(k):(v[0], v[1]) for k, v in tested_case.items()}	# only get the reference output and the student output
 	wrong_case = {str(k):(v[0], v[1]) for k, v in wrong_case.items()}
-	resultJson = { 'reference': app.getFile(), 'grading': appStudent.getFile(), 'grade': final_grade, 'path_constraint_grade': pathConstraintGrade, 'tested_case': tested_case, 'wrong_case': wrong_case }
+	resultJson = { 'reference': app.getFile(), 'grading': appStudent.getFile(), 'grade': final_grade, 'path_constraint_grade': pathConstraintGrade, 'tested_case': tested_case, 'wrong_case': wrong_case, 'feedback': feedback }
 	with open('res/'+app.getFile()+'-'+appStudent.getFile()+'.json', 'w+') as fp:
 		json.dump(resultJson, fp, indent=4)
 	
