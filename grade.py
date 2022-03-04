@@ -1,6 +1,7 @@
 import os
 import sys
 import logging
+import time
 import traceback
 import json
 from optparse import OptionParser
@@ -35,7 +36,9 @@ usage = "usage: %prog [options] <path to reference *.py file> <path to submissio
 parser = OptionParser(usage=usage)
 
 parser.add_option("-l", "--log", dest="logfile", action="store", help="Save log output to a file", default="")
-parser.add_option("-m", "--max-iters", dest="max_iters", type="int", help="Run specified number of iterations", default=0)
+parser.add_option("-m", "--max-iters", dest="max_iters", type="int", help="Run specified number of iterations (0 for unlimited). Should be used for looping or recursive programs.", default=0)
+parser.add_option("-t", "--max-time", dest="max_time", type="float", help="Maximum time for exploration (0 for unlimited). Expect maximum execution time to be around three times the amount.", default=0)
+parser.add_option("-q", "--quiet", dest="print_path", action="store_false", help="Quiet mode. Does not print path constraints. Should be activated for looping or recursive programs as printing z3 expressions can be time consuming.", default=True)
 
 (options, args) = parser.parse_args()
 
@@ -60,15 +63,17 @@ print ("Grading: " + appStudent.getFile() + "." + appStudent.getEntry())
 
 result = None
 try:
+	start_time = time.time()
+
 	logging.debug('Exploring reference application')
 	explorationEngine = ExplorationEngine(app.createInvocation(), "z3")
-	generatedInputs, returnVals, path = explorationEngine.explore(options.max_iters)
+	generatedInputs, returnVals, path = explorationEngine.explore(options.max_iters, options.max_time, start_time)
 	with open('logs/reference.dot', 'w') as outfile:
 		print(explorationEngine.path.toDot(), file=outfile)
 
 	logging.debug('Exploring student application')
 	explorationEngineStudent = ExplorationEngine(appStudent.createInvocation(), "z3")
-	generatedInputsStudent, returnValsStudent, pathStudent = explorationEngineStudent.explore(options.max_iters)
+	generatedInputsStudent, returnValsStudent, pathStudent = explorationEngineStudent.explore(options.max_iters, options.max_time, start_time)
 	with open('logs/student.dot', 'w') as outfile:
 		print(explorationEngineStudent.path.toDot(), file=outfile)
 
@@ -97,23 +102,6 @@ try:
 			del tested_case_from_formula[generated_input_tuple]
 		if generated_input_tuple in wrong_case_from_formula:
 			del wrong_case_from_formula[generated_input_tuple]
-
-	# Print out the results
-	print('======')
-	print('RESULT')
-	print('======')
-	print('tested:')
-	pretty_print(tested_case)
-	print('tested from path dev or path eq:')
-	pretty_print(tested_case_from_formula)
-	print('wrong:')
-	pretty_print(wrong_case)
-	print('wrong from path dev or path eq:')
-	pretty_print(wrong_case_from_formula)
-	print('grade:')
-	final_grade = (len(tested_case) - len(wrong_case)) / len(tested_case) * 100
-	print(str(final_grade) + '% (' + str(len(tested_case) - len(wrong_case)) + '/' + str(len(tested_case)) + ')')
-	print()
 
 	# Path constraint grading
 	pathConstraints = {}
@@ -144,10 +132,38 @@ try:
 	for key in pathConstraints:
 		studentScore += pathConstraints[key]
 		totalScore += 1
-
+	
+	# Don't print path deviation and equivalence if print_path is false
+	if not options.print_path:
+		for key in tested_case:
+			tested_case[key][2] = '-'
+			tested_case[key][3] = '-'
+		for key in wrong_case:
+			wrong_case[key][2] = '-'
+			wrong_case[key][3] = '-'
+	
 	# Print out the results
-	print('path constraints:')
-	pretty_print(pathConstraints)
+	print('======')
+	print('RESULT')
+	print('======')
+	print('tested:')
+	pretty_print(tested_case)
+	print('tested from path dev or path eq:')
+	pretty_print(tested_case_from_formula)
+	print('wrong:')
+	pretty_print(wrong_case)
+	print('wrong from path dev or path eq:')
+	pretty_print(wrong_case_from_formula)
+	print('grade:')
+	final_grade = (len(tested_case) - len(wrong_case)) / len(tested_case) * 100
+	print(str(final_grade) + '% (' + str(len(tested_case) - len(wrong_case)) + '/' + str(len(tested_case)) + ')')
+	print()
+
+	# Print out the path constraints and their respective scores
+	if options.print_path:
+		print('path constraints:')
+		pretty_print(pathConstraints)
+
 	print('path constraint grade:')
 	pathConstraintGrade = studentScore / totalScore * 100
 	print(str(pathConstraintGrade) + '% (' + str(studentScore) + '/' + str(totalScore) + ')')

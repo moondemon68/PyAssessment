@@ -3,6 +3,7 @@
 from collections import deque
 import logging
 import os
+import time
 from typing import Any, Tuple
 
 from symbolic.constraint import Constraint
@@ -42,11 +43,14 @@ class ExplorationEngine:
 		# make sure to remember the input that led to this constraint
 		constraint.inputs = self._getInputs()
 
-	def explore(self, max_iterations=0) -> Tuple[list, list, PathToConstraint]:
+	def explore(self, max_iterations=0, max_time=0, start_time=0) -> Tuple[list, list, PathToConstraint]:
 		self._oneExecution()
 		iterations = 1
 		if max_iterations != 0 and iterations >= max_iterations:
 			log.debug("Maximum number of iterations reached, terminating")
+			return self.generated_inputs, self.execution_return_values, self.path
+		if max_time != 0 and time.time() - start_time >= max_time:
+			log.debug("Time limit exceeded, terminating")
 			return self.generated_inputs, self.execution_return_values, self.path
 
 		while not self._isExplorationComplete():
@@ -72,6 +76,9 @@ class ExplorationEngine:
 
 			if max_iterations != 0 and iterations >= max_iterations:
 				log.info("Maximum number of iterations reached, terminating")
+				break
+			if max_time != 0 and time.time() - start_time >= max_time:
+				log.info("Time limit exceeded, terminating")
 				break
 
 		return self.generated_inputs, self.execution_return_values, self.path

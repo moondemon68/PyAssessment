@@ -85,7 +85,24 @@ path constraint grade:
 
 ## Usage
 ```
-python grade.py <reference_implementation> <student_implementation>
+python grade.py <reference_implementation> <student_implementation> [options]
+```
+
+## Options
+```
+  -h, --help            show this help message and exit
+  -l LOGFILE, --log=LOGFILE
+                        Save log output to a file
+  -m MAX_ITERS, --max-iters=MAX_ITERS
+                        Run specified number of iterations (0 for unlimited).
+                        Should be used for looping or recursive programs.
+  -t MAX_TIME, --max-time=MAX_TIME
+                        Maximum time for exploration (0 for unlimited). Expect
+                        maximum execution time to be around three times the
+                        amount.
+  -q, --quiet           Quiet mode. Does not print path constraints. Should be
+                        activated for looping or recursive programs as
+                        printing z3 expressions can be time consuming.
 ```
 
 ## Comparing with Random Input
