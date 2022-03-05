@@ -1,5 +1,5 @@
 from . symbolic_type import SymbolicObject
-from symbolic.symbolic_types.symbolic_int import SymbolicInteger
+from grader.symbolic.symbolic_types.symbolic_int import SymbolicInteger
 from string import whitespace
 
 class SymbolicStr(SymbolicObject, str):

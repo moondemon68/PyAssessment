@@ -1,7 +1,7 @@
 import contextlib
 import io
 from trace import Trace
-from symbolic.loader import Loader
+from grader.symbolic.loader import Loader
 
 # get visited lines
 def traceApp(app: Loader, cases: dict) -> list:

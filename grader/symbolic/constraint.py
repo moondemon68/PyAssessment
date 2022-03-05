@@ -3,7 +3,7 @@
 import logging
 from typing import Tuple
 
-from symbolic.predicate import Predicate
+from grader.symbolic.predicate import Predicate
 
 log = logging.getLogger("se.constraint")
 

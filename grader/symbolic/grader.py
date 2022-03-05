@@ -2,8 +2,8 @@ from collections import deque
 import logging
 from typing import Any, Tuple
 
-from symbolic.constraint import Constraint
-from symbolic.predicate import Predicate
+from grader.symbolic.constraint import Constraint
+from grader.symbolic.predicate import Predicate
 
 from .z3_utils.z3_wrap import Z3Wrapper
 from .z3_utils.z3_translator import Z3Translator

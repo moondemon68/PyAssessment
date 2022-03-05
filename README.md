@@ -11,7 +11,7 @@ This code is a modified version of:
 This repository will be the deliverable of my final project.
 
 ## Getting Started
-1. Make sure you have Python of version at least 3.9 installed (due to type hinting).
+1. Make sure you have Python of version at least 3.10 installed (due to type hinting).
 2. Install the requirements.
 ```
 pip install -r requirements.txt

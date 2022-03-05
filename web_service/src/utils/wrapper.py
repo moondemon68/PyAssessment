@@ -1,4 +1,6 @@
-def get_response(err: bool, msg: str, data: dict[str, any] = None, status_code: int = 200):
+from http import HTTPStatus
+
+def get_response(err: bool, msg: str, data: dict[str, any] = None, status_code: int = HTTPStatus.OK):
 	ret = {
 		"error": err,
 		"message": msg

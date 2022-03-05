@@ -6,7 +6,7 @@ import os
 import time
 from typing import Any, Tuple
 
-from symbolic.constraint import Constraint
+from grader.symbolic.constraint import Constraint
 
 from .z3_utils.z3_wrap import Z3Wrapper
 from .path_to_constraint import PathToConstraint

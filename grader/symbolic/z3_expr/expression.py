@@ -1,7 +1,7 @@
 import utils
 
-from symbolic.symbolic_types.symbolic_int import SymbolicInteger
-from symbolic.symbolic_types.symbolic_type import SymbolicType
+from grader.symbolic.symbolic_types.symbolic_int import SymbolicInteger
+from grader.symbolic.symbolic_types.symbolic_type import SymbolicType
 from z3 import *
 
 class Z3Expression(object):

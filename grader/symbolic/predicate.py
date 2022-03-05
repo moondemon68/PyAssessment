@@ -1,6 +1,6 @@
 # Copyright - see copyright.txt
 
-from symbolic.symbolic_types.symbolic_type import SymbolicType
+from grader.symbolic.symbolic_types.symbolic_type import SymbolicType
 
 
 class Predicate:

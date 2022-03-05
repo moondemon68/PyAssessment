@@ -11,10 +11,10 @@ install()
 
 
 def create_logger():
-    """Create a logger for use in all cases."""
-    loglevel = os.environ.get('LOGLEVEL', 'INFO').upper()
-    rich_handler = RichHandler(rich_tracebacks=True, markup=True)
-    logging.basicConfig(level=loglevel, format='%(message)s',
-                        datefmt="[%Y/%m/%d %H:%M;%S]",
-                        handlers=[rich_handler])
-    return logging.getLogger('rich')
+  """Create a logger for use in all cases."""
+  loglevel = os.environ.get('LOGLEVEL', 'INFO').upper()
+  rich_handler = RichHandler(rich_tracebacks=True, markup=True)
+  logging.basicConfig(level=loglevel, format='%(message)s',
+                      datefmt="[%Y/%m/%d %H:%M;%S]",
+                      handlers=[rich_handler])
+  return logging.getLogger('rich')
