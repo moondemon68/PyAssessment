@@ -22,7 +22,7 @@ pip install -r requirements.txt
 ```
 4. Try grading something.
 ```
-python whitebox_grade.py test/max_3/max_3.py test/max_3/max_3_1.py
+python grade.py test/max_3/max_3.py test/max_3/max_3_1.py
 ```
 It should return something like this and save the result to `res` folder.
 
@@ -90,14 +90,16 @@ Please check line(s) 2, 4, 7 in your program.
 
 ## Usage
 ```
-python whitebox_grade.py <reference_implementation> <student_implementation> [options]
+python grade.py <reference_implementation> <student_implementation> [options]
 ```
 
 ## Options
 ```
   -h, --help            show this help message and exit
+  -g GRADER, --grader=GRADER
+                        Grader to be used. ['random', 'whitebox' (default)]
   -l LOGFILE, --log=LOGFILE
-                        Save log output to a file
+                        Save log output to a file.
   -m MAX_ITERS, --max-iters=MAX_ITERS
                         Run specified number of iterations (0 for unlimited).
                         Should be used for looping or recursive programs.
@@ -114,7 +116,7 @@ python whitebox_grade.py <reference_implementation> <student_implementation> [op
 One of the goal of exploring this approach is to see if it can cover edge cases where random input generation can't. To see if it does that on a particular problem, try generating random inputs and compare the result with PyAssessment.
 
 ```
-python random_grade.py <reference_implementation> <student_implementation>
+python grade.py <reference_implementation> <student_implementation> -g random
 ```
 
 ## Test All in Directory
@@ -147,6 +149,5 @@ TODO: Will do after finishing the project (obviously).
 TODO: Will put a link to the paper after finishing the project.
 
 ## TODO
-- Use Flask to create a web service
-- Dockerize the server
 - Check the case where conditions are correct but the return statement is wrong (what score should be given?)
+- Add time limit to handle infinite loop/recursion
