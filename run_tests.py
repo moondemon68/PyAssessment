@@ -1,9 +1,7 @@
 import os
-import re
 import sys
 import subprocess
 from optparse import OptionParser
-from sys import platform as _platform
 from problems import problems
 
 class bcolors:
@@ -61,8 +59,8 @@ for problem in problems:
         fullReference = os.path.join(test_dir, problem, reference)
         fullStudent = os.path.join(test_dir, problem, student)
         with open(os.devnull, 'w') as devnull:
-            ret = subprocess.call([sys.executable, 'whitebox_grade.py', fullReference, fullStudent, '-m 25', '-t 0.1'], stdout=devnull, stderr=devnull)
-            retRandom = subprocess.call([sys.executable, 'random_grade.py', fullReference, fullStudent], stdout=devnull, stderr=devnull)
+            ret = subprocess.call([sys.executable, 'grade.py', fullReference, fullStudent, '-m', '25', '-t', '0.1', '-g', 'whitebox'], stdout=devnull, stderr=devnull)
+            retRandom = subprocess.call([sys.executable, 'grade.py', fullReference, fullStudent, '-g', 'random'], stdout=devnull, stderr=devnull)
             if ret == 0 and retRandom == 0:
                 print(bcolors.OKGREEN + "✓", student + bcolors.ENDC)
             else:

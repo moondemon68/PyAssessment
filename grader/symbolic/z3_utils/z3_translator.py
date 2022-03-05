@@ -5,7 +5,7 @@ import sys
 import ast
 import logging
 from typing import Any, Tuple
-import utils
+import grader.utils
 
 from z3 import *
 from ..z3_expr.integer import Z3Integer
@@ -76,7 +76,7 @@ class Z3Translator(object):
 				elif op == ">=":
 					return z3_l >= z3_r
 				else:
-					utils.crash("Unknown BinOp during conversion from ast to Z3 (expressions): %s" % op)
+					grader.utils.crash("Unknown BinOp during conversion from ast to Z3 (expressions): %s" % op)
 			else:
 				if op == "==":
 					return z3_l != z3_r
@@ -91,7 +91,7 @@ class Z3Translator(object):
 				elif op == ">=":
 					return z3_l < z3_r
 				else:
-					utils.crash("Unknown BinOp during conversion from ast to Z3 (expressions): %s" % op)
+					grader.utils.crash("Unknown BinOp during conversion from ast to Z3 (expressions): %s" % op)
 
 		elif isinstance(expr, SymbolicInteger):
 			return Int(expr.name)

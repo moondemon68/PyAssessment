@@ -1,4 +1,4 @@
-import utils
+import grader.utils
 
 from grader.symbolic.symbolic_types.symbolic_int import SymbolicInteger
 from grader.symbolic.symbolic_types.symbolic_type import SymbolicType
@@ -95,7 +95,7 @@ class Z3Expression(object):
 			elif op == ">=":
 				return self._wrapIf(z3_l >= z3_r,solver,env)
 			else:
-				utils.crash("Unknown BinOp during conversion from ast to Z3 (expressions): %s" % op)
+				grader.utils.crash("Unknown BinOp during conversion from ast to Z3 (expressions): %s" % op)
 
 		elif isinstance(expr, SymbolicInteger):
 			if expr.isVariable():
@@ -107,7 +107,7 @@ class Z3Expression(object):
 				return self._astToZ3Expr(expr.expr,solver,env)
 
 		elif isinstance(expr, SymbolicType):
-			utils.crash("{} is an unsupported SymbolicType of {}".
+			grader.utils.crash("{} is an unsupported SymbolicType of {}".
 						format(expr, type(expr)))
 
 		elif isinstance(expr, int):
@@ -116,7 +116,7 @@ class Z3Expression(object):
 			else:
 				return expr
 		else:
-			utils.crash("Unknown node during conversion from ast to Z3 (expressions): %s" % expr)
+			grader.utils.crash("Unknown node during conversion from ast to Z3 (expressions): %s" % expr)
 
 	def _add(self, l, r, solver):
 		return l + r
