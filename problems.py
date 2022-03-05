@@ -1,4 +1,3 @@
-
 # a dictionary with problem name as key and array of filenames as value.
 # first filename is the reference solution, while the rest are student solutions
 problems = {

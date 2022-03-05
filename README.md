@@ -11,10 +11,10 @@ This code is a modified version of:
 This repository will be the deliverable of my final project.
 
 ## Getting Started
-1. Make sure you have Python 3.x installed.
-2. Install Z3 [here](https://github.com/Z3Prover/z3) or using pip.
+1. Make sure you have Python of version at least 3.9 installed (due to type hinting).
+2. Install the requirements.
 ```
-pip install z3-solver
+pip install -r requirements.txt
 ```
 3. For MacOS, open `setup.sh` and change the path according to your local machine then run:
 ```
@@ -115,6 +115,19 @@ One of the goal of exploring this approach is to see if it can cover edge cases 
 python random_grade.py <reference_implementation> <student_implementation>
 ```
 
+## Test All in Directory
+1. Define the problem, reference solution, and student solutions in `problems.py`.
+2. Run `python run_tests.py [test_directory]`
+```
+python run_tests.py test
+```
+3. A message `All tests passed!` will be printed if all tests passed. The json result of all tests will be saved in the `res` folder.
+
+## Generate Report
+1. Make sure that all json results are present in the `res` folder. It should work fine if you have run the `test all` command.
+2. Run `python generate_report.py`
+3. The report will be generated in the `res` folder with filename `report.csv`.
+
 ## How does it do that?
 TODO: Will do after finishing the project (obviously).
 
@@ -124,3 +137,8 @@ TODO: Will do after finishing the project (obviously).
 
 ## Literature
 TODO: Will put a link to the paper after finishing the project.
+
+## TODO
+- Use Flask to create a web service
+- Dockerize the server
+- Check the case where conditions are correct but the return statement is wrong (what score should be given?)
