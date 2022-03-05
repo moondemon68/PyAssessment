@@ -21,13 +21,13 @@ class RandomGrade(Resource):
     if 'src' not in request.files:
       return get_response(err=True, msg='src required', status_code=HTTPStatus.BAD_REQUEST)
     
-    random_uuid = uuid.uuid4().hex
+    random_uuid = 'a' + uuid.uuid4().hex # functions should start with a char
     if not os.path.exists(os.path.join('/tmp', random_uuid)):
       os.makedirs(os.path.join('/tmp', random_uuid))
 
     src_ref = request.files['src_ref']
     err_file, msg_file = check_file(src_ref)
-    src_ref_filename = os.path.join('/tmp', random_uuid, secure_filename(src_ref.filename))
+    src_ref_filename = os.path.join('/tmp', random_uuid + '_' + secure_filename(src_ref.filename))
     if err_file:
       return get_response(err=True, msg='error reading src_ref: ' + msg_file, status_code=HTTPStatus.BAD_REQUEST)
     else:
@@ -38,7 +38,7 @@ class RandomGrade(Resource):
     
     src = request.files['src']
     err_file, msg_file = check_file(src)
-    src_filename = os.path.join('/tmp', random_uuid, secure_filename(src.filename))
+    src_filename = os.path.join('/tmp', random_uuid + '_' + secure_filename(src.filename))
     if err_file:
       return get_response(err=True, msg='error reading src: ' + msg_file, status_code=HTTPStatus.BAD_REQUEST)
     else:
@@ -47,6 +47,23 @@ class RandomGrade(Resource):
       except:
         return get_response(err=True, msg='error saving src to ' + src_filename, status_code=HTTPStatus.BAD_REQUEST)
     
+    # replace function name
+    fin = open(src_ref_filename, "rt")
+    data = fin.read()
+    data = data.replace('def ' + secure_filename(src_ref.filename[:-3]), 'def ' + random_uuid + '_' + secure_filename(src_ref.filename[:-3]))
+    fin.close()
+    fin = open(src_ref_filename, "wt")
+    fin.write(data)
+    fin.close()
+
+    fin = open(src_filename, "rt")
+    data = fin.read()
+    data = data.replace('def ' + secure_filename(src.filename[:-3]), 'def ' + random_uuid + '_' + secure_filename(src.filename[:-3]))
+    fin.close()
+    fin = open(src_filename, "wt")
+    fin.write(data)
+    fin.close()
+
     try:
       result = random_grade(src_ref_filename, src_filename)
       return result
