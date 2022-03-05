@@ -1,0 +1,26 @@
+{
+    "reference": "segiempat",
+    "grading": "segiempat_9",
+    "grade": 100.0,
+    "path_constraint_grade": 100.0,
+    "tested_case": {
+        "(('n', 0),)": [
+            "",
+            ""
+        ],
+        "(('n', 1),)": [
+            "*",
+            "*"
+        ],
+        "(('n', 2),)": [
+            "**\n**",
+            "**\n**"
+        ],
+        "(('n', 4),)": [
+            "****\n*##*\n*##*\n****",
+            "****\n*##*\n*##*\n****"
+        ]
+    },
+    "wrong_case": {},
+    "feedback": "Please check line(s)  in your program."
+}
