@@ -120,7 +120,12 @@ try:
 			score = 1
 		else:
 			# else, we need to calculate the similarity of the path constraint that lead to the wrong output with the path constraint that lead to the right output
-			score = similarity(referencePathConstraint, studentPathConstraint)
+			similarityScore = similarity(referencePathConstraint, studentPathConstraint)
+			if similarityScore == 1:
+				# if the path constraints are exactly the same and the output is different, then the mistake is in the output (not the conditions)
+				score = 0.2 # need to ask about this, how the scoring works in teaching env
+			else:
+				score = similarityScore
 		
 		# two path constraints may produce different results based on the input, so previously correct path constraints may be wrong now
 		if (referencePathConstraint, studentPathConstraint) not in pathConstraints:

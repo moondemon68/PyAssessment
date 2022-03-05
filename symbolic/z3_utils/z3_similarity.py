@@ -13,6 +13,11 @@ def similarity(reference: BoolRef, student: BoolRef) -> float:
   # the number of reference expressions that is present in student expressions list
   # the number of student expressions that is present in reference expressions list
   total = len(reference) + len(student)
+
+  # both expressions are empty and equal
+  if total == 0:
+    return 1
+  
   present = 0
   for r in reference:
     if r in student:
