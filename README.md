@@ -22,9 +22,11 @@ pip install -r requirements.txt
 ```
 4. Try grading something.
 ```
-python grade.py test/max_3/max_3.py test/max_3/max_3_1.py
+python whitebox_grade.py test/max_3/max_3.py test/max_3/max_3_1.py
 ```
 It should return something like this and save the result to `res` folder.
+
+DOT files containing the exploration paths can be seen in `logs` folder as `student.dot` and `reference.dot`. DOT files can be viewed using `graphviz` (online services such as [this](https://dreampuf.github.io/GraphvizOnline) can also be used).
 ```
 Reference: max_3.max_3
 Grading: max_3_1.max_3_1
@@ -88,7 +90,7 @@ Please check line(s) 2, 4, 7 in your program.
 
 ## Usage
 ```
-python grade.py <reference_implementation> <student_implementation> [options]
+python whitebox_grade.py <reference_implementation> <student_implementation> [options]
 ```
 
 ## Options
@@ -127,6 +129,12 @@ python run_tests.py test
 1. Make sure that all json results are present in the `res` folder. It should work fine if you have run the `test all` command.
 2. Run `python generate_report.py`
 3. The report will be generated in the `res` folder with filename `report.csv`.
+
+## Cleanup
+Cleans up the `res` and `logs` folder.
+```
+python clean.py
+```
 
 ## How does it do that?
 TODO: Will do after finishing the project (obviously).

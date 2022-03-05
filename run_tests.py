@@ -32,18 +32,19 @@ if not os.path.isdir(test_dir):
     sys.exit(1)
 
 tested_problems = [
-    'air',
+    # 'air',
+    # 'is_allowed_to_buy',
+    # 'max_3',
+    # 'no_of_triangle',
+    'segiempat',
+    # 'student_grade',
+
     # 'arithmetic_seq',
     # 'digits',
-    'is_allowed_to_buy',
     # 'is_ordered',
-    'max_3',
     # 'mid_3',
     # 'min_3',
-    'no_of_triangle',
     # 'pow3abs',
-    'segiempat',
-    'student_grade',
     # 'sum_20',
 ]
 
@@ -60,7 +61,7 @@ for problem in problems:
         fullReference = os.path.join(test_dir, problem, reference)
         fullStudent = os.path.join(test_dir, problem, student)
         with open(os.devnull, 'w') as devnull:
-            ret = subprocess.call([sys.executable, 'grade.py', fullReference, fullStudent, '-m 25', '-t 0.1'], stdout=devnull, stderr=devnull)
+            ret = subprocess.call([sys.executable, 'whitebox_grade.py', fullReference, fullStudent, '-m 25', '-t 0.1'], stdout=devnull, stderr=devnull)
             retRandom = subprocess.call([sys.executable, 'random_grade.py', fullReference, fullStudent], stdout=devnull, stderr=devnull)
             if ret == 0 and retRandom == 0:
                 print(bcolors.OKGREEN + "✓", student + bcolors.ENDC)
