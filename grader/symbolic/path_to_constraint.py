@@ -62,8 +62,6 @@ class PathToConstraint:
 			# We've already processed both
 			cneg.processed = True
 			c.processed = True
-			# log.debug("Processed constraint neg: %s" % cneg)
-			# log.debug("Processed constraint: %s" % c)
 
 		self.current_constraint = c
 

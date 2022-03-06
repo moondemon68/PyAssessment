@@ -55,7 +55,6 @@ class Loader:
 					Loader._initializeArgumentSymbolic(inv, f, v, s)
 		for a in argspec.args:
 			if not a in inv.getNames():
-				# print('init arg symbolic = ', a)
 				Loader._initializeArgumentSymbolic(inv, a, 0, SymbolicInteger)
 		return inv
 
@@ -72,7 +71,6 @@ class Loader:
 		if "expected_result_set" in self.app.__dict__:
 			return self._check(return_vals, self.app.__dict__["expected_result_set"](), False)
 		else:
-			# print(self._fileName + ".py contains no expected_result function")
 			return None
 
 	# -- private

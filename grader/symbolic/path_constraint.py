@@ -32,25 +32,16 @@ class PathConstraint:
 		Branch can be either True or False."""
 
 		# add both possible predicate outcomes to constraint (tree)
-		# print('symbolic_type:')
-		# print(symbolic_type.toString())
 		p = Predicate(symbolic_type, branch)
-		# print('Predicate:')
-		# print(p)
 		self.add_pc(p)
 		p.negate()
-		# log.debug("negative: %s" % p)
 		cneg = self.current_constraint.findChild(p)
 		p.negate()
-		# log.debug("positive: %s" % p)
 		c = self.current_constraint.findChild(p)
 
 		if c is None:
 			c = self.current_constraint.addChild(p)
-			# print('whichBranch:')
-			# print(c)
 			# we add the new constraint to the queue of the engine for later processing
-			# log.debug("New constraint: %s" % c)
 			self.add(c)
 			
 		# check for path mismatch
@@ -71,8 +62,6 @@ class PathConstraint:
 			# We've already processed both
 			cneg.processed = True
 			c.processed = True
-			# log.debug("Processed constraint neg: %s" % cneg)
-			# log.debug("Processed constraint: %s" % c)
 
 		self.current_constraint = c
 

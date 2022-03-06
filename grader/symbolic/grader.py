@@ -28,8 +28,6 @@ class GradingEngine:
 		for n in funcinv.getNames():
 			self.symbolic_inputs[n] = funcinv.createArgumentValue(n)
 
-		# print(self.symbolic_inputs)
-
 		self.constraints_to_solve = deque([])
 		self.num_processed_constraints = 0
 		
@@ -64,7 +62,7 @@ class GradingEngine:
 			pathDeviationFormula = self.path_deviation_builder(pc, pcStudent)
 			sat, res = self.z3_solve(pathDeviationFormula)
 			if sat == 'unsat':
-				# print('no path deviation, skipping...')
+				# no path deviation
 				continue
 
 			# if there is a path deviation, check equivalence using the result of the satisfiability formula to trigger the deviation
@@ -78,7 +76,7 @@ class GradingEngine:
 			pathEquivalenceFormula = self.path_equivalence_builder(pc, pcStudent, retSym, retStudentSym)
 			sat, res = self.z3_solve(pathEquivalenceFormula)
 			if sat == 'unsat':
-				# print('path is equivalent, skipping...')
+				# path is equivalent
 				continue
 			
 			# there is a deviation and the deviated path is not equal, so student's program is wrong

@@ -176,7 +176,6 @@ class Z3Translator(object):
 			self.z3_expr = Z3Integer()
 			self.z3_expr.toZ3(self.solver,self.asserts,self.query)
 			res = self.solver.check()
-			#print(self.solver.assertions)
 			self.solver.pop()
 			if res == unsat:
 				return None
@@ -192,8 +191,6 @@ class Z3Translator(object):
 			self.solver.pop()
 			self.N = self.N+8
 			if self.N <= 64: print("expanded bit width to "+str(self.N)) 
-		#print("Assertions")
-		#print(self.solver.assertions())
 		if ret == unsat:
 			res = None
 		elif ret == unknown:

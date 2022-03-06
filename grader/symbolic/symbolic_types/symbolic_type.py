@@ -141,27 +141,21 @@ class SymbolicObject(SymbolicType, object):
 
 	def __eq__(self, other):
 		# TODO: what it self is not symbolic and other is???
-		# print(self.name, "==" ,other.name)
 		return self._do_bin_op(other, lambda x, y: x == y, "==", SymbolicObject.wrap)
 
 	def __ne__(self, other):
-		# print(self.name, "!=" ,other.name)
 		return self._do_bin_op(other, lambda x, y: x != y, "!=", SymbolicObject.wrap)
 
 	def __lt__(self, other):
-		# print(self.name, "<" ,other.name)
 		return self._do_bin_op(other, lambda x, y: x < y, "<", SymbolicObject.wrap)
 
 	def __le__(self, other):
-		# print(self.name, "<=" ,other.name)
 		return self._do_bin_op(other, lambda x, y: x <= y, "<=", SymbolicObject.wrap)
 
 	def __gt__(self, other):
-		# print(self.name, ">" ,other.name)
 		return self._do_bin_op(other, lambda x, y: x > y, ">", SymbolicObject.wrap)
 
 	def __ge__(self, other):
-		# print(self.name, ">=" ,other.name)
 		return self._do_bin_op(other, lambda x, y: x >= y, ">=", SymbolicObject.wrap)
 
 

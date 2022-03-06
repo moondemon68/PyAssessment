@@ -61,7 +61,6 @@ class Constraint:
 		return s
 
 	def findChild(self, predicate: Predicate) -> 'Constraint':
-		# log.debug("children: %s" % self.children)
 		for c in self.children:
 			if predicate == c.predicate:
 				return c
