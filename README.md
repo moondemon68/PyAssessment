@@ -18,9 +18,23 @@ pip install -r requirements.txt
 ```
 3. For MacOS, open `setup.sh` and change the path according to your local machine then run:
 ```
-. pyjudge/setup.sh
+. grader/setup.sh
 ```
-4. Try grading something.
+4. Make sure you have docker installed.
+5. Run docker using this command
+```
+docker-compose up --build
+```
+
+## Endpoints
+Full documentation can be accessed [here (TBD)](www.google.com).
+
+## Usage
+```
+python grade.py <reference_implementation> <student_implementation> [options]
+```
+
+## Example Usage
 ```
 python grade.py test/max_3/max_3.py test/max_3/max_3_1.py
 ```
@@ -88,11 +102,6 @@ feedback:
 Please check line(s) 2, 4, 7 in your program.
 ```
 
-## Usage
-```
-python grade.py <reference_implementation> <student_implementation> [options]
-```
-
 ## Options
 ```
   -h, --help            show this help message and exit
@@ -138,6 +147,9 @@ Cleans up the `res` and `logs` folder.
 python clean.py
 ```
 
+## Timelimits
+For both the web service and `grade.py`, there is a hard time limit of 10 seconds. This is used to handle the case where the student implementation is not responding due to infinite loops or recursion.
+
 ## How does it do that?
 TODO: Will do after finishing the project (obviously).
 
@@ -150,4 +162,3 @@ TODO: Will put a link to the paper after finishing the project.
 
 ## TODO
 - Check the case where conditions are correct but the return statement is wrong (what score should be given?)
-- Add time limit to handle infinite loop/recursion

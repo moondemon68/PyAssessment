@@ -8,6 +8,7 @@ from grader.grading import random_grade
 from werkzeug.utils import secure_filename
 import uuid
 import os
+from func_timeout import func_timeout, FunctionTimedOut
 
 class RandomGrade(Resource):
   def __init__(self):
@@ -65,8 +66,11 @@ class RandomGrade(Resource):
     fin.close()
 
     try:
-      result = random_grade(src_ref_filename, src_filename)
+      result = func_timeout(10, random_grade, args=(src_ref_filename, src_filename))
       return result
     except Exception as e:
       self.logger.error('an error occured:', e)
       return get_response(err=True, msg='An error occurred', status_code=HTTPStatus.INTERNAL_SERVER_ERROR)
+    except FunctionTimedOut as e:
+      self.logger.error('Time limit exceeded')
+      return get_response(err=True, msg='Time limit exceeded', status_code=HTTPStatus.REQUEST_TIMEOUT)
