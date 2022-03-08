@@ -1,3 +1,21 @@
+# a list of problems that will be tested
+tested_problems = [
+    # 'air',
+    # 'is_allowed_to_buy',
+    'max_3',
+    'no_of_triangle',
+    # 'segiempat',
+    # 'student_grade',
+
+    # 'arithmetic_seq',
+    # 'digits',
+    # 'is_ordered',
+    # 'mid_3',
+    # 'min_3',
+    # 'pow3abs',
+    # 'sum_20',
+]
+
 # a dictionary with problem name as key and array of filenames as value.
 # first filename is the reference solution, while the rest are student solutions
 problems = {

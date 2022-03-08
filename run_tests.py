@@ -2,7 +2,7 @@ import os
 import sys
 import subprocess
 from optparse import OptionParser
-from problems import problems
+from problems import problems, tested_problems
 
 class bcolors:
     HEADER = '\033[95m'
@@ -28,23 +28,6 @@ test_dir = os.path.abspath(args[0])
 if not os.path.isdir(test_dir):
     print("Please provide a directory of test scripts.")
     sys.exit(1)
-
-tested_problems = [
-    # 'air',
-    # 'is_allowed_to_buy',
-    # 'max_3',
-    # 'no_of_triangle',
-    'segiempat',
-    # 'student_grade',
-
-    # 'arithmetic_seq',
-    # 'digits',
-    # 'is_ordered',
-    # 'mid_3',
-    # 'min_3',
-    # 'pow3abs',
-    # 'sum_20',
-]
 
 failed = []
 print('Running tests:')

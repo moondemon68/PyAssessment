@@ -1,21 +1,12 @@
 import json
-from problems import problems
+from problems import problems, tested_problems
 import os
 import pandas as pd
-
-report_problems = [
-	'max_3',
-	'segiempat',
-	'student_grade',
-	'is_allowed_to_buy',
-	'no_of_triangle',
-	'air',
-]
 
 with open('res/report.csv', 'w+') as f:
 	data = []
 	res_dir = os.path.abspath('res')
-	for problem in report_problems:
+	for problem in tested_problems:
 		files = problems[problem]
 		reference = files[0]
 		students = files[1:]
