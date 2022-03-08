@@ -181,7 +181,9 @@ tmp.txt
 #############
 .idea
 
+# res and logs
 res/*.json
+res/*.csv
 res/*/*.json
 
 logs/*.txt

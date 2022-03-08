@@ -175,4 +175,3 @@ TODO: Will put a link to the paper after finishing the project.
 ## TODO
 - Check the case where conditions are correct but the return statement is wrong (what score should be given?)
 - Add timelimit as a request parameter that can override default 10 seconds
-- Refactor code such that both grade.py and the web service use the same grading function in grader/grading.py
