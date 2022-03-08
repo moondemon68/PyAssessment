@@ -2,7 +2,7 @@
 Concolic execution based automatic grading tool for Python functions.
 
 ## About This Project
-PyAssessment is an automatic grading tool which gives a score to a student implementation based on its semantic similarity with a reference implementation.
+PyAssessment is an automatic grading tool which gives a score to a student implementation based on its semantic similarity with a reference implementation. This tool can be used in the form a web service.
 
 This code is a modified version of:
 - [PyJudge](https://github.com/Barbariansyah/pyjudge): An automatic grading tool that takes a reference implementation and a student implementation, and finds input(s) that generate a different output.
@@ -10,7 +10,15 @@ This code is a modified version of:
 
 This repository will be the deliverable of my final project.
 
-## Getting Started
+## Getting Started (Docker)
+1. Make sure you have docker installed.
+2. Start the server using this command:
+```
+docker-compose up --build
+```
+3. Visit http://localhost:5000/. Ignore the IP given in the server log.
+
+## Getting Started (Python)
 1. Make sure you have Python of version at least 3.10 installed (due to type hinting).
 2. Install the requirements.
 ```
@@ -20,11 +28,15 @@ pip install -r requirements.txt
 ```
 . grader/setup.sh
 ```
-4. Make sure you have docker installed.
-5. Run docker using this command
+4. Make sure you are in the repository root. Set the python path to current directory:
 ```
-docker-compose up --build
+set PYTHONPATH=.
 ```
+5. Start the server using this command:
+```
+python web_service/src/main.py
+```
+6. Visit http://localhost:5000/. Ignore the IP given in the server log.
 
 ## Endpoints
 Full documentation can be accessed [here (TBD)](www.google.com).
@@ -162,3 +174,5 @@ TODO: Will put a link to the paper after finishing the project.
 
 ## TODO
 - Check the case where conditions are correct but the return statement is wrong (what score should be given?)
+- Add timelimit as a request parameter that can override default 10 seconds
+- Refactor code such that both grade.py and the web service use the same grading function in grader/grading.py
