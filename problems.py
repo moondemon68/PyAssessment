@@ -1,11 +1,11 @@
 # a list of problems that will be tested
 tested_problems = [
-    # 'air',
-    # 'is_allowed_to_buy',
+    'air',
+    'is_allowed_to_buy',
     'max_3',
     'no_of_triangle',
-    # 'segiempat',
-    # 'student_grade',
+    'segiempat',
+    'student_grade',
 
     # 'arithmetic_seq',
     # 'digits',

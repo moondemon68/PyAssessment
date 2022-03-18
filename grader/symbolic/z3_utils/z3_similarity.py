@@ -5,28 +5,26 @@ from z3 import BoolRef, ArithRef, simplify, Tactic
 # calculate similarity between path constraints
 # both path constraints are already in the conjunctive normal form
 def similarity(reference: BoolRef, student: BoolRef) -> float:
-  reference = simplifyExpression(reference)
-  student = simplifyExpression(student)
+  referenceSimplified = simplifyExpression(reference)
+  studentSimplified = simplifyExpression(student)
 
   # after simplification, all same expressions should have the same form
-  # similarity score is counted by summing:
-  # the number of reference expressions that is present in student expressions list
-  # the number of student expressions that is present in reference expressions list
-  total = len(reference) + len(student)
+  # similarity score using jaccard similarity:
+  # the number of reference expressions that is present in student expressions list, divided by
+  # the number of expressions
+  total = len(referenceSimplified) + len(studentSimplified)
 
   # both expressions are empty and equal
   if total == 0:
     return 1
   
-  present = 0
-  for r in reference:
-    if r in student:
-      present += 1
-  for s in student:
-    if s in reference:
-      present += 1
+  intersect = 0
+  for r in referenceSimplified:
+    if r in studentSimplified:
+      intersect += 1
   
-  return present/total
+  union = total - intersect
+  return intersect/union
 
 # simplification techniques used to get a uniform form of expression:
 # arith_ineq_lhs => rewrite inequalities so that right-hand-side is a constant

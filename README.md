@@ -173,5 +173,4 @@ TODO: Will do after finishing the project (obviously).
 TODO: Will put a link to the paper after finishing the project.
 
 ## TODO
-- Check the case where conditions are correct but the return statement is wrong (what score should be given?)
-- Add timelimit as a request parameter that can override default 10 seconds
+- Improve tracing (when path constraints are equal but return value is wrong)
