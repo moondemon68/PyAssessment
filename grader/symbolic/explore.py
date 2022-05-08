@@ -86,7 +86,7 @@ class ExplorationEngine:
 	# private
 
 	def _updateSymbolicParameter(self, name: str, val: Any) -> None:
-		self.symbolic_inputs[name] = self.invocation.createArgumentValue(name,val)
+		self.symbolic_inputs[name] = self.invocation.createArgumentValue(name, val)
 
 	def _getInputs(self) -> dict:
 		return self.symbolic_inputs.copy()

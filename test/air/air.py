@@ -1,6 +1,6 @@
 def air(t):
     if t < 0:
-	    return "PADAT"
+        return "PADAT"
     elif t > 0 and t < 100:
         return "CAIR"
     elif t > 100:

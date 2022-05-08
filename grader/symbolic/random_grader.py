@@ -36,7 +36,3 @@ class RandomGradingEngine:
         self.tested_case[self._inputs_dict_to_tuple()] = (ret, retStudent)
         if ret != retStudent:
             self.wrong_case[self._inputs_dict_to_tuple()] = (ret, retStudent)
-
-
-        
-        
