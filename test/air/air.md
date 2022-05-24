@@ -7,6 +7,6 @@ Diberikan sebuah integer t yang menyatakan temperatur dalam celcius. Tentukan ap
 - ANTARA CAIR-GAS: Ketika temperatur berada tepat 100 derajat celsius.
 - GAS: Ketika temperatur diatas 100 derajat celsius.
 ## Input
-- t: integer (-273 ≤ t ≤ 1000)
+- t: integer (-100 ≤ t ≤ 200)
 ## Output
 - Sebuah string yang menunjukkan wujud air.

@@ -1,5 +1,5 @@
 # No of Triangle
-Note: Solusi mungkin salah.
+Note: Reference solution is wrong. This problem will not be tested.
 ## Soal
 Diberikan tiga buah integer a, b, dan c yang masing-masing menyatakan panjang sisi segitiga. Tentukan banyaknya segitiga unik yang dapat dibentuk oleh ketiga sisi tersebut.
 ## Input
