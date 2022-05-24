@@ -32,6 +32,8 @@ def main():
 	parser.add_option("-m", "--max-iters", dest="max_iters", type="int", help="Run specified number of iterations (0 for unlimited). Should be used for looping or recursive programs.", default=0)
 	parser.add_option("-t", "--max-time", dest="max_time", type="float", help="Maximum time for exploration (0 for unlimited). Expect maximum execution time to be around three times the amount.", default=0)
 	parser.add_option("-q", "--quiet", dest="print_path", action="store_false", help="Quiet mode. Does not print path constraints. Should be activated for looping or recursive programs as printing z3 expressions can be time consuming.", default=True)
+	parser.add_option("-a", "--min-args", dest="min_args", action="store", type="int", help="Minimum value for arguments (random grading only)", default=-100)
+	parser.add_option("-A", "--max-args", dest="max_args", action="store", type="int", help="Minimum value for arguments (random grading only)", default=100)
 
 	(options, args) = parser.parse_args()
 
@@ -62,7 +64,7 @@ def main():
 
 	else:
 		try:
-			random_grade(filename, filenameStudent, printLogs=True)
+			random_grade(filename, filenameStudent, options.min_args, options.max_args, printLogs=True)
 
 		except ImportError as e:
 			# createInvocation can raise this

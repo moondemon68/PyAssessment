@@ -18,7 +18,7 @@ def pretty_print(d: dict) -> None:
 	print("}")
 	print()
 
-def random_grade(filename, filenameStudent, printLogs=False):
+def random_grade(filename, filenameStudent, min_args, max_args, printLogs=False):
 	# Get the object describing the application
 	app = loaderFactory(filename)
 	appStudent = loaderFactory(filenameStudent)
@@ -26,7 +26,7 @@ def random_grade(filename, filenameStudent, printLogs=False):
 	print("Grading: " + appStudent.getFile() + "." + appStudent.getEntry())
 
 	try:
-		gradingEngine = RandomGradingEngine(app.createInvocation(), appStudent.createInvocation(), "z3")
+		gradingEngine = RandomGradingEngine(app.createInvocation(), appStudent.createInvocation(), min_args, max_args, "z3")
 		tested_case, wrong_case = gradingEngine.grade()
 		final_grade = (len(tested_case) - len(wrong_case)) / len(tested_case) * 100
 		tested_case = {str(k):v for k, v in tested_case.items()}

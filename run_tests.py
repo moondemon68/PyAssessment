@@ -35,7 +35,9 @@ for problem in problems:
     if problem not in tested_problems:
         continue
     print('Problem:', problem)
-    files = problems[problem]
+    files = problems[problem]['files']
+    min_args = str(problems[problem]['min_args'])
+    max_args = str(problems[problem]['max_args'])
     reference = files[0]
     students = files[1:]
     for student in students:
@@ -43,7 +45,7 @@ for problem in problems:
         fullStudent = os.path.join(test_dir, problem, student)
         with open(os.devnull, 'w') as devnull:
             ret = subprocess.call([sys.executable, 'grade.py', fullReference, fullStudent, '-m', '50', '-t', '0.5', '-g', 'whitebox'], stdout=devnull, stderr=devnull)
-            retRandom = subprocess.call([sys.executable, 'grade.py', fullReference, fullStudent, '-g', 'random'], stdout=devnull, stderr=devnull)
+            retRandom = subprocess.call([sys.executable, 'grade.py', fullReference, fullStudent, '-g', 'random', '-a', min_args, '-A', max_args], stdout=devnull, stderr=devnull)
             if ret == 0 and retRandom == 0:
                 print(bcolors.OKGREEN + "✓", student + bcolors.ENDC)
             else:

@@ -113,7 +113,7 @@ class RandomGrade(Resource):
     fin.close()
 
     try:
-      result = func_timeout(time_limit / 1000, random_grade, args=(reference_file_path, solution_file_path))
+      result = func_timeout(time_limit / 1000, random_grade, args=(reference_file_path, solution_file_path, -100, 100))
       # cleanup
       os.remove(reference_file_path)
       os.remove(solution_file_path)

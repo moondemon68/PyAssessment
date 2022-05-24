@@ -1,11 +1,13 @@
 import random
 
 class RandomGradingEngine:
-    def __init__(self, funcinv, funcinvStudent, solver="z3"):
+    def __init__(self, funcinv, funcinvStudent, min_args, max_args, solver="z3"):
         random.seed(0)
         self.inputs = {}
         self.funcinv = funcinv
         self.funcinvStudent = funcinvStudent
+        self.min_args = min_args
+        self.max_args = max_args
         self.init_inputs()
         self.tested_case = {}
         self.wrong_case = {}
@@ -16,7 +18,7 @@ class RandomGradingEngine:
 
     def randomize_inputs(self):
         for arg in self.funcinv.getNames():
-            self.inputs[arg] = random.randint(-100, 100)
+            self.inputs[arg] = random.randint(self.min_args, self.max_args)
     
     def grade(self):
         for i in range(1000):

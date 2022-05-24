@@ -7,7 +7,7 @@ with open('res/report.csv', 'w+') as f:
 	data = []
 	res_dir = os.path.abspath('res')
 	for problem in tested_problems:
-		files = problems[problem]
+		files = problems[problem]['files']
 		reference = files[0]
 		students = files[1:]
 		for student in students:
