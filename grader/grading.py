@@ -135,8 +135,11 @@ def whitebox_grade(filename, filenameStudent, maxIters, maxTime, printLogs=False
 
 		# Get feedback
 		visitedLines = traceApp(appStudent, wrong_case)
-		visitedLines = [str(x) for x in visitedLines]
-		feedback = 'Please check line(s) ' + ', '.join(visitedLines) + ' in your program.'
+		if visitedLines:
+			visitedLines = [str(x) for x in visitedLines]
+			feedback = 'Please check line(s) ' + ', '.join(visitedLines) + ' in your program.'
+		else:
+			feedback = 'OK'
 		
 		if printLogs:
 			with open('logs/reference.dot', 'w') as outfile:
