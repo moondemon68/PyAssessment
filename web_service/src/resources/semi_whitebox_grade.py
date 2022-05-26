@@ -139,6 +139,12 @@ class SemiWhiteboxGrade(Resource):
       os.remove(solution_file_path)
 
       return get_response(err=True, msg='Filename mismatch', status_code=HTTPStatus.OK)
+    except NameError as e:
+      # cleanup
+      os.remove(reference_file_path)
+      os.remove(solution_file_path)
+
+      return get_response(err=True, msg='syntax error', status_code=HTTPStatus.OK)
     except Exception as e:
       # cleanup
       os.remove(reference_file_path)

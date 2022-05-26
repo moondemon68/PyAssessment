@@ -135,16 +135,22 @@ class WhiteboxGrade(Resource):
       os.remove(reference_file_path)
       os.remove(solution_file_path)
 
-      return get_response(err=True, msg='Time limit exceeded', status_code=HTTPStatus.OK)
+      return get_response(err=True, msg='time limit exceeded', status_code=HTTPStatus.OK)
     except AttributeError as e:
       # cleanup
       os.remove(reference_file_path)
       os.remove(solution_file_path)
 
-      return get_response(err=True, msg='Filename mismatch', status_code=HTTPStatus.OK)
+      return get_response(err=True, msg='filename mismatch', status_code=HTTPStatus.OK)
+    except NameError as e:
+      # cleanup
+      os.remove(reference_file_path)
+      os.remove(solution_file_path)
+
+      return get_response(err=True, msg='syntax error', status_code=HTTPStatus.OK)
     except Exception as e:
       # cleanup
       os.remove(reference_file_path)
       os.remove(solution_file_path)
 
-      return get_response(err=True, msg='An error occurred', status_code=HTTPStatus.INTERNAL_SERVER_ERROR)
+      return get_response(err=True, msg='an error occurred', status_code=HTTPStatus.INTERNAL_SERVER_ERROR)
