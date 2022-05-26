@@ -17,3 +17,4 @@ rich==11.2.0
 six==1.16.0
 Werkzeug==2.0.3
 z3-solver==4.8.14.0
+gunicorn==20.1.0
