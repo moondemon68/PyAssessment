@@ -45,7 +45,7 @@ class Z3Translator(object):
 			elif op == "*":
 				return z3_l * z3_r
 			elif op == "//":
-				return z3_l // z3_r
+				return z3_l / z3_r
 			elif op == "%":
 				return z3_l % z3_r
 

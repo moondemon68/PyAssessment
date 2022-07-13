@@ -29,8 +29,8 @@ def main():
 
 	parser.add_option("-g", "--grader", dest="grader", type="choice", help="Grader to be used.", default="whitebox", choices=['random', 'whitebox'])
 	parser.add_option("-l", "--log", dest="logfile", action="store", help="Save log output to a file.", default="")
-	parser.add_option("-m", "--max-iters", dest="max_iters", type="int", help="Run specified number of iterations (0 for unlimited). Should be used for looping or recursive programs.", default=0)
-	parser.add_option("-t", "--max-time", dest="max_time", type="float", help="Maximum time for exploration (0 for unlimited). Expect maximum execution time to be around three times the amount.", default=0)
+	parser.add_option("-m", "--max-iters", dest="max_iters", type="int", help="Run specified number of iterations (0 for unlimited). Should be used for looping or recursive programs.", default=500)
+	parser.add_option("-t", "--max-time", dest="max_time", type="float", help="Maximum time for exploration (0 for unlimited, default 5). Expect maximum execution time to be around three times the amount.", default=5)
 	parser.add_option("-q", "--quiet", dest="print_path", action="store_false", help="Quiet mode. Does not print path constraints. Should be activated for looping or recursive programs as printing z3 expressions can be time consuming.", default=True)
 	parser.add_option("-a", "--min-args", dest="min_args", action="store", type="int", help="Minimum value for arguments (random grading only)", default=-100)
 	parser.add_option("-A", "--max-args", dest="max_args", action="store", type="int", help="Minimum value for arguments (random grading only)", default=100)
@@ -78,8 +78,10 @@ def main():
 
 if __name__ == '__main__':
 	try:
-		result = func_timeout(10, main)
+		result = func_timeout(20, main)
+	except RecursionError as e:
+		print('Recursion limit exceeded, probably due to an infinite loop/recursion')
 	except Exception as e:
-		print('an error occured:', e.with_traceback())
+		print('An error occured:', e)
 	except FunctionTimedOut as e:
 		print('Time limit exceeded')
