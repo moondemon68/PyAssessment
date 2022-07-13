@@ -130,6 +130,12 @@ class WhiteboxGrade(Resource):
         msg="success",
         data=returned_data,
       )
+    except RecursionError as e:
+      # cleanup
+      os.remove(reference_file_path)
+      os.remove(solution_file_path)
+
+      return get_response(err=True, msg='infinite loop or recursion', status_code=HTTPStatus.OK)
     except FunctionTimedOut as e:
       # cleanup
       os.remove(reference_file_path)
