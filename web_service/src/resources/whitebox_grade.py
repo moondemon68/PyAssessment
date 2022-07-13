@@ -113,7 +113,7 @@ class WhiteboxGrade(Resource):
     fin.close()
 
     try:
-      result = func_timeout(time_limit / 1000, whitebox_grade, args=(reference_file_path, solution_file_path, 25, 1))
+      result = func_timeout(time_limit / 1000, whitebox_grade, args=(reference_file_path, solution_file_path, 100, time_limit / 5000))
       # cleanup
       os.remove(reference_file_path)
       os.remove(solution_file_path)
