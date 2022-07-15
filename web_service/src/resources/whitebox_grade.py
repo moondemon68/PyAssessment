@@ -59,7 +59,8 @@ class WhiteboxGrade(Resource):
       )
     
     # generate random uuid to make unique file/function name
-    random_uuid = 'a' + uuid.uuid4().hex
+    random_uuid_1 = 'a' + uuid.uuid4().hex
+    random_uuid_2 = 'a' + uuid.uuid4().hex
     
     encoded_reference_file = request_data['references'][0]
     reference_file_name = request_data['referencesFileNames'][0]
@@ -68,7 +69,7 @@ class WhiteboxGrade(Resource):
     time_limit = request_data['timeLimit']
 
     # decode base64 and save reference file
-    reference_file_path = os.path.join('/tmp', random_uuid + '_' + secure_filename(reference_file_name))
+    reference_file_path = os.path.join('/tmp', random_uuid_1 + '_' + secure_filename(reference_file_name))
     try:
       reference_file = base64.b64decode(encoded_reference_file).decode('utf-8')
     except Exception as e:
@@ -82,7 +83,7 @@ class WhiteboxGrade(Resource):
       f.write(reference_file)
 
     # decode base64 and save solution file
-    solution_file_path = os.path.join('/tmp', random_uuid + '_' + secure_filename(solution_file_name))
+    solution_file_path = os.path.join('/tmp', random_uuid_2 + '_' + secure_filename(solution_file_name))
     try:
       solution_file = base64.b64decode(encoded_solution_file).decode('utf-8')
     except Exception as e:
@@ -98,7 +99,7 @@ class WhiteboxGrade(Resource):
     # replace function name
     fin = open(reference_file_path, "r")
     data = fin.read()
-    data = data.replace(secure_filename(reference_file_name[:-3]), random_uuid + '_' + secure_filename(reference_file_name[:-3]))
+    data = data.replace(secure_filename(reference_file_name[:-3]), random_uuid_1 + '_' + secure_filename(reference_file_name[:-3]))
     fin.close()
     fin = open(reference_file_path, "w")
     fin.write(data)
@@ -106,7 +107,7 @@ class WhiteboxGrade(Resource):
 
     fin = open(solution_file_path, "r")
     data = fin.read()
-    data = data.replace(secure_filename(solution_file_name[:-3]), random_uuid + '_' + secure_filename(solution_file_name[:-3]))
+    data = data.replace(secure_filename(solution_file_name[:-3]), random_uuid_2 + '_' + secure_filename(solution_file_name[:-3]))
     fin.close()
     fin = open(solution_file_path, "w")
     fin.write(data)
