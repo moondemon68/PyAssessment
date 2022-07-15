@@ -98,7 +98,7 @@ class WhiteboxGrade(Resource):
     # replace function name
     fin = open(reference_file_path, "r")
     data = fin.read()
-    data = data.replace('def ' + secure_filename(reference_file_name[:-3]), 'def ' + random_uuid + '_' + secure_filename(reference_file_name[:-3]))
+    data = data.replace(secure_filename(reference_file_name[:-3]), random_uuid + '_' + secure_filename(reference_file_name[:-3]))
     fin.close()
     fin = open(reference_file_path, "w")
     fin.write(data)
@@ -106,14 +106,14 @@ class WhiteboxGrade(Resource):
 
     fin = open(solution_file_path, "r")
     data = fin.read()
-    data = data.replace('def ' + secure_filename(solution_file_name[:-3]), 'def ' + random_uuid + '_' + secure_filename(solution_file_name[:-3]))
+    data = data.replace(secure_filename(solution_file_name[:-3]), random_uuid + '_' + secure_filename(solution_file_name[:-3]))
     fin.close()
     fin = open(solution_file_path, "w")
     fin.write(data)
     fin.close()
 
     try:
-      result = func_timeout(time_limit / 1000, whitebox_grade, args=(reference_file_path, solution_file_path, 100, time_limit / 5000))
+      result = func_timeout(time_limit / 1000, whitebox_grade, args=(reference_file_path, solution_file_path, 500, time_limit / 5000))
       # cleanup
       os.remove(reference_file_path)
       os.remove(solution_file_path)
