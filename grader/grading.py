@@ -89,11 +89,13 @@ def whitebox_grade(filename, filenameStudent, maxIters, maxTime, printLogs=False
 
 	try:
 		start_time = time.time()
-
 		explorationEngine = ExplorationEngine(app.createInvocation(), "z3")
 		generatedInputs, returnVals, path = explorationEngine.explore(maxIters, maxTime, start_time)
+
+		start_time = time.time()
 		explorationEngineStudent = ExplorationEngine(appStudent.createInvocation(), "z3")
 		generatedInputsStudent, returnValsStudent, pathStudent = explorationEngineStudent.explore(maxIters, maxTime, start_time)
+		
 		generatedInputs += generatedInputsStudent
 		returnVals += returnValsStudent
 

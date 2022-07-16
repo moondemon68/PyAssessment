@@ -23,7 +23,7 @@ def pretty_print(d: dict) -> None:
 	print()
 
 def main():
-	sys.setrecursionlimit(10**5)
+	sys.setrecursionlimit(10**6)
 	sys.path = [os.path.abspath(os.path.join(os.path.dirname(__file__)))] + sys.path
 
 	usage = "usage: %prog [options] <path to reference *.py file> <path to submission *.py file>"
@@ -53,7 +53,7 @@ def main():
 	if options.grader == 'whitebox':
 		try:
 			whitebox_grade(filename, filenameStudent, options.max_iters, options.max_time, printLogs=True, printPaths=options.print_path)
-			
+
 		except ImportError as e:
 			# createInvocation can raise this
 			logging.error(e)
