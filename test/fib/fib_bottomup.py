@@ -1,4 +1,4 @@
-def fib(x):
+def fib_bottomup(x):
 	dp = [0 for _ in range(1005)]
 	dp[0] = 1
 	dp[1] = 1
