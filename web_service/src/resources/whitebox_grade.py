@@ -119,11 +119,17 @@ class WhiteboxGrade(Resource):
       os.remove(reference_file_path)
       os.remove(solution_file_path)
 
+      feedback = [
+        result['feedback']
+      ]
+      if len(result['wrong_case']):
+        feedback.append('Wrong case(s):')
+        for case in result['wrong_case']:
+          feedback.append(case)
+
       returned_data = {
         'grade': result['grade'],
-        'feedback': [
-          result['feedback']
-        ]
+        'feedback': '<br>'.join(feedback)
       }
 
       return get_response(
