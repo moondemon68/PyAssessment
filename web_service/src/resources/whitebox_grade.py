@@ -129,7 +129,7 @@ class WhiteboxGrade(Resource):
 
       returned_data = {
         'grade': result['grade'],
-        'feedback': '<br>'.join(feedback)
+        'feedback': ['<br>'.join(feedback)]
       }
 
       return get_response(

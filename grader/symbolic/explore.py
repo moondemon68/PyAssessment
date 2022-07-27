@@ -78,6 +78,7 @@ class ExplorationEngine:
 				log.debug("Maximum number of iterations reached, terminating")
 				break
 			if max_time != 0 and time.time() - start_time >= max_time:
+				# print(time.time() - start_time) # exploration time
 				log.debug("Time limit exceeded, terminating")
 				break
 

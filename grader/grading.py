@@ -98,12 +98,14 @@ def whitebox_grade(filename, filenameStudent, maxIters, maxTime, printLogs=False
 		
 		generatedInputs += generatedInputsStudent
 		returnVals += returnValsStudent
+		start_time = time.time()
 
 		gradingEngine = GradingEngine(app.createInvocation(), appStudent.createInvocation(), "z3")
 		tested_case, wrong_case = gradingEngine.grade(generatedInputs, returnVals)
 
 		# Path constraint grading
 		pathConstraints = {}
+		pathConstraintsCase = {}
 		studentScore = 0
 		totalScore = 0
 		for case in tested_case:
@@ -128,7 +130,9 @@ def whitebox_grade(filename, filenameStudent, maxIters, maxTime, printLogs=False
 				pathConstraints[(referencePathConstraint, studentPathConstraint)] = score
 			else:
 				pathConstraints[(referencePathConstraint, studentPathConstraint)] = min(score, pathConstraints[(referencePathConstraint, studentPathConstraint)])
-		
+
+			# simply replace the case, so that each pair of path constraints has only one case
+			pathConstraintsCase[(referencePathConstraint, studentPathConstraint)] = case
 		# calculate score
 		for key in pathConstraints:
 			studentScore += pathConstraints[key]
@@ -193,6 +197,8 @@ def whitebox_grade(filename, filenameStudent, maxIters, maxTime, printLogs=False
 			if printPaths:
 				print('path constraints:')
 				pretty_print(pathConstraints)
+				print('path constraints case:')
+				pretty_print(pathConstraintsCase)
 			print('path constraint grade:')
 			pathConstraintGrade = studentScore / totalScore * 100
 			print(str(pathConstraintGrade) + '% (' + str(studentScore) + '/' + str(totalScore) + ')')
@@ -200,6 +206,7 @@ def whitebox_grade(filename, filenameStudent, maxIters, maxTime, printLogs=False
 			print('feedback:')
 			print(feedback)
 			print()
+			# print(time.time() - start_time) # path similarity grading time
 			testedCaseFile = {str(k):(v[0], v[1]) for k, v in tested_case.items()}
 			wrongCaseFile = {str(k):(v[0], v[1]) for k, v in wrong_case.items()}
 			resultJsonFile = { 'reference': app.getFile(), 'grading': appStudent.getFile(), 'grade': final_grade, 'path_constraint_grade': pathConstraintGrade, 'tested_case': testedCaseFile, 'wrong_case': wrongCaseFile, 'feedback': feedback }
