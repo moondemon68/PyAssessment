@@ -140,7 +140,7 @@ class SymbolicObject(SymbolicType, object):
 		return self._do_sexpr([self,other], fun, op, wrap)
 
 	def __eq__(self, other):
-		# TODO: what it self is not symbolic and other is???
+		# TODO: what if self is not symbolic and other is???
 		return self._do_bin_op(other, lambda x, y: x == y, "==", SymbolicObject.wrap)
 
 	def __ne__(self, other):
